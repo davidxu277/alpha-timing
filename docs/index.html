@@ -34,10 +34,6 @@
   .top .sp{flex:1}
   .upd{font-size:12px;color:var(--muted);text-align:right;line-height:1.5}
   .upd b{color:var(--ink);font-weight:600}
-  .lang{margin-left:12px;display:inline-flex;border:1px solid var(--panel-brd);border-radius:999px;overflow:hidden}
-  .lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;
-        padding:5px 11px;cursor:pointer;transition:.2s}
-  .lang button.on{background:var(--accent);color:#04121e;font-weight:700}
 
   /* hero */
   .hero{border:1px solid var(--panel-brd);border-radius:var(--r);overflow:hidden;
@@ -134,10 +130,6 @@
     </div>
     <span class="sp"></span>
     <div class="upd" id="upd"></div>
-    <div class="lang">
-      <button data-lang="en" class="on">EN</button>
-      <button data-lang="zh">中文</button>
-    </div>
   </div>
 
   <div id="app"><div class="err" data-i18n="loading">Loading live signals…</div></div>
@@ -185,13 +177,6 @@ fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
   DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0]; render();
 }).catch(e=>{ document.getElementById("app").innerHTML =
   '<div class="err">Could not load <code>data/signals.json</code>. Run <code>python docs/update_signals.py</code> first.</div>'; });
-
-document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
-  LANG=b.dataset.lang;
-  document.querySelectorAll(".lang button").forEach(x=>x.classList.toggle("on",x===b));
-  document.documentElement.lang = LANG==="zh"?"zh":"en";
-  if(DATA) render();
-});
 
 function setTheme(reg){
   const r=REG[reg]||REG.Sideways, root=document.documentElement.style;
