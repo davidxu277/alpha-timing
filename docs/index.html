@@ -30,7 +30,6 @@
   @keyframes glowpulse{from{opacity:.22;transform:scale(1)}to{opacity:.36;transform:scale(1.14)}}
   @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   @keyframes chartwipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-  @keyframes sheen{0%,55%{left:-60%}78%,100%{left:135%}}
   .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:26px 20px 60px}
 
   /* top bar */
@@ -73,10 +72,7 @@
   .act{font-size:22px;font-weight:800;letter-spacing:.01em;padding:6px 16px;border-radius:11px;
         background:var(--accent);color:#04121e;white-space:nowrap;transition:background var(--tr)}
   .act.buy{--a:#22c55e} .act.hold{--a:#3b82f6} .act.sell{--a:#ef4444}
-  .act{background:var(--a,var(--accent));position:relative;overflow:hidden}
-  .act::after{content:"";position:absolute;top:0;left:-60%;width:38%;height:100%;
-        background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);
-        transform:skewX(-18deg);animation:sheen 4.2s ease-in-out infinite}
+  .act{background:var(--a,var(--accent))}
   .areason{color:var(--muted);font-size:13.5px;flex:1;min-width:200px;line-height:1.5}
 
   /* metrics */
@@ -129,7 +125,7 @@
   }
   @media(prefers-reduced-motion:reduce){
     #flow{display:none}
-    .dot,.glow,#spark,.act::after,.intro .hero,.intro .card{animation:none!important}
+    .dot,.glow,#spark,.intro .hero,.intro .card{animation:none!important}
     *{transition-duration:.25s!important}
   }
 </style>
