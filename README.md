@@ -64,6 +64,23 @@ daily-close), pulling live prices from Yahoo, 2y/10y yields from the U.S. Treasu
 
 **▶ [View the live board](https://davidxu277.github.io/alpha-timing/)** · *research only — not investment advice.*
 
+**Reading the signals.** The system's position is a **continuous 0–100%** number (the volatility-target
+overlay scales it), not a binary in/out. So instead of just buy/hold/sell, the board classifies today's
+call by how the position moved versus yesterday:
+
+| Signal | Triggered when | Classic equivalent |
+|---|---|---|
+| **BUY** | flat yesterday → invested today (clears the **entry** line) | buy |
+| **SELL** | invested yesterday → flat today (breaks the **exit** line) | sell |
+| **CASH** | still flat, staying out | hold cash |
+| **ADD** | still invested, exposure **up >3%** vs yesterday | partial buy |
+| **TRIM** | still invested, exposure **down >3%** vs yesterday | partial sell |
+| **HOLD** | still invested, exposure roughly unchanged | hold |
+
+**BUY / SELL** are the in-vs-out switch decided by the [dual-threshold hysteresis](#highlight-2--dual-threshold-hysteresis);
+**ADD / TRIM** happen while staying invested when the [volatility target](#highlight-1--volatility-target-position-sizing)
+resizes the position (vol falls → add, vol rises → trim); 3% is the cutoff between "resize" and "no change".
+
 ```bash
 python build_models.py            # one-time: cache the trained stack locally (optional)
 python docs/update_signals.py     # fetch live data + write docs/data/signals.json
