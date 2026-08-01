@@ -102,7 +102,8 @@
   .rail{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}
   .card{border:1px solid var(--panel-brd);border-radius:14px;padding:13px 12px;cursor:pointer;
         background:var(--panel);position:relative;overflow:hidden;transition:.25s;text-align:left}
-  .card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--ca) 50%,transparent)}
+  .card:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--ca) 55%,transparent);
+        box-shadow:0 12px 28px rgba(0,0,0,.4)}
   .card.sel{border-color:var(--ca);background:color-mix(in srgb,var(--ca) 12%,var(--panel))}
   .card .bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ca)}
   .card .cs{font-weight:800;font-size:14px;color:var(--ink)}
@@ -287,7 +288,8 @@ function render(){
       </button>`; }).join("")}</div>`;
 
   app.querySelectorAll(".card").forEach(c=>c.onclick=()=>{ SEL=c.dataset.sym; render(); });
-  app.classList.toggle("intro", FIRST); FIRST=false;
+  if(FIRST){ app.classList.add("intro"); FIRST=false;
+    setTimeout(()=>app.classList.remove("intro"), 1100); }  // let entrance finish, then free hover transforms
   animateNums();
   CUR=s; requestAnimationFrame(()=>drawSpark(s));
 }
