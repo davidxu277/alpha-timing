@@ -7,7 +7,7 @@
 <style>
   :root{
     --bg:#0a0e14; --bg2:#0f1620; --panel:rgba(255,255,255,.045);
-    --panel-brd:rgba(255,255,255,.09); --ink:#e8edf4; --muted:#8b98a9; --faint:#5b6675;
+    --panel-brd:rgba(255,255,255,.09); --ink:#f4f7fa; --muted:#c3ccd8; --faint:#93a0af;
     --accent:#22c55e; --accent2:#16a34a; --accent-soft:rgba(34,197,94,.14);
     --pos:#22c55e; --neg:#ef4444;
     --r:18px; --tr:.7s cubic-bezier(.4,0,.2,1);
@@ -30,12 +30,6 @@
   /* top bar */
   .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
   .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em}
-  .mark{width:30px;height:30px;border-radius:8px;position:relative;overflow:hidden;
-        background:linear-gradient(135deg,var(--accent),var(--accent2));transition:background var(--tr);
-        box-shadow:0 4px 16px var(--accent-soft)}
-  .mark::after{content:"";position:absolute;left:14%;right:14%;bottom:26%;height:11%;
-        background:rgba(255,255,255,.9);border-radius:2px;
-        clip-path:polygon(0 100%,22% 55%,44% 72%,72% 12%,100% 0,100% 100%)}
   .brand small{display:block;font-weight:500;font-size:11px;color:var(--muted);letter-spacing:.06em}
   .top .sp{flex:1}
   .upd{font-size:12px;color:var(--muted);text-align:right;line-height:1.5}
@@ -84,7 +78,7 @@
   /* metrics */
   .mets{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
   .met{border:1px solid var(--panel-brd);border-radius:13px;padding:13px 14px;background:var(--panel)}
-  .met .k{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+  .met .k{font-size:11px;color:var(--ink);letter-spacing:.05em;text-transform:uppercase}
   .met .v{font-size:20px;font-weight:800;margin-top:5px;font-variant-numeric:tabular-nums}
   .met .s{font-size:11px;color:var(--faint);margin-top:2px}
 
@@ -106,7 +100,7 @@
   .card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--ca) 50%,transparent)}
   .card.sel{border-color:var(--ca);background:color-mix(in srgb,var(--ca) 12%,var(--panel))}
   .card .bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ca)}
-  .card .cs{font-weight:800;font-size:14px}
+  .card .cs{font-weight:800;font-size:14px;color:var(--ink)}
   .card .cr{font-size:11px;color:var(--ca);font-weight:700;margin-top:3px}
   .card .cadv{font-size:11px;color:var(--muted);margin-top:6px}
   .card .cpx{font-size:11px;color:var(--faint);margin-top:3px;font-variant-numeric:tabular-nums}
@@ -135,7 +129,6 @@
 <div class="wrap">
   <div class="top">
     <div class="brand">
-      <span class="mark"></span>
       <span>ALPHA TIMING<small data-i18n="tag">Regime-aware live signal board</small></span>
     </div>
     <span class="sp"></span>
