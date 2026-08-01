@@ -114,19 +114,22 @@ def fetch_macro() -> pd.DataFrame:
 
 # ── per-ticker inference ──────────────────────────────────────────────────────
 def advice_for(cur: float, prev: float, regime: str, yhat: float) -> tuple[str, str]:
-    """Turn a position transition into a buy/sell call + one-line rationale."""
+    """Collapse the position change into three calls — BUY / SELL / HOLD.
+
+    Exposure is continuous (0–100%), so 'buy' = size up (enter or add), 'sell' = size
+    down (exit or trim), 'hold' = unchanged (fully invested or waiting in cash)."""
     pct = f"{yhat * 100:+.2f}%"
     if prev <= 0 < cur:
-        return "BUY", f"{regime} regime — the 5-day forecast ({pct}) cleared the entry line."
+        return "BUY", f"{regime} regime — 5-day forecast ({pct}) cleared the entry line; enter."
     if prev > 0 >= cur:
         return "SELL", f"{regime} regime — forecast fell below the exit line; step to cash."
-    if cur <= 0:
-        return "CASH", f"{regime} regime — signal ({pct}) stays below the entry line; hold cash."
     if cur - prev > 0.03:
-        return "ADD", f"{regime} regime — falling volatility lets exposure rise toward target."
+        return "BUY", f"{regime} regime — falling volatility lets the position size up."
     if prev - cur > 0.03:
-        return "TRIM", f"{regime} regime — volatility rising; the vol target trims exposure."
-    return "HOLD", f"{regime} regime — forecast {pct}; stay invested at target exposure."
+        return "SELL", f"{regime} regime — rising volatility trims the position."
+    if cur > 0:
+        return "HOLD", f"{regime} regime — forecast {pct}; stay invested at target exposure."
+    return "HOLD", f"{regime} regime — signal ({pct}) below the entry line; stay in cash."
 
 
 def signal_for(symbol: str, label: str, macro: pd.DataFrame, m: dict) -> dict:

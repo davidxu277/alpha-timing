@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-01 08:55 UTC",
+  "updated_at": "2026-08-01 23:28 UTC",
   "note": "Signals update once per trading day; the model is daily-close. Research only \u2014 not investment advice.",
   "tickers": {
     "SPY": {
@@ -750,8 +750,8 @@
       "prev_position": 0.0,
       "vol_annual": 0.238,
       "vol_cap": 1.0,
-      "advice": "CASH",
-      "advice_reason": "Sideways regime \u2014 signal (-0.09%) stays below the entry line; hold cash.",
+      "advice": "HOLD",
+      "advice_reason": "Sideways regime \u2014 signal (-0.09%) below the entry line; stay in cash.",
       "as_of": "2026-07-31",
       "history": [
         {
@@ -1479,7 +1479,7 @@
     "AAPL": {
       "label": "Apple",
       "regime": "Sideways",
-      "regime_conf": 0.561,
+      "regime_conf": 0.557,
       "price": 308.91,
       "change_1d": -0.0735,
       "yhat_5d": -0.0016,
@@ -1487,8 +1487,8 @@
       "prev_position": 0.865,
       "vol_annual": 0.367,
       "vol_cap": 0.68,
-      "advice": "TRIM",
-      "advice_reason": "Sideways regime \u2014 volatility rising; the vol target trims exposure.",
+      "advice": "SELL",
+      "advice_reason": "Sideways regime \u2014 rising volatility trims the position.",
       "as_of": "2026-07-31",
       "history": [
         {
@@ -2953,7 +2953,7 @@
     "MSFT": {
       "label": "Microsoft",
       "regime": "Crisis",
-      "regime_conf": 0.738,
+      "regime_conf": 0.737,
       "price": 464.72,
       "change_1d": 0.0302,
       "yhat_5d": 0.0084,
@@ -3690,7 +3690,7 @@
     "GOOGL": {
       "label": "Alphabet",
       "regime": "Sideways",
-      "regime_conf": 0.475,
+      "regime_conf": 0.476,
       "price": 356.13,
       "change_1d": 0.0673,
       "yhat_5d": -0.0111,
@@ -3698,8 +3698,8 @@
       "prev_position": 0.0,
       "vol_annual": 0.461,
       "vol_cap": 0.542,
-      "advice": "CASH",
-      "advice_reason": "Sideways regime \u2014 signal (-1.11%) stays below the entry line; hold cash.",
+      "advice": "HOLD",
+      "advice_reason": "Sideways regime \u2014 signal (-1.11%) below the entry line; stay in cash.",
       "as_of": "2026-07-31",
       "history": [
         {

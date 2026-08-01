@@ -66,8 +66,7 @@
         border:1px solid var(--panel-brd)}
   .act{font-size:22px;font-weight:800;letter-spacing:.01em;padding:6px 16px;border-radius:11px;
         background:var(--accent);color:#04121e;white-space:nowrap;transition:background var(--tr)}
-  .act.buy,.act.add{--a:#22c55e} .act.hold{--a:#3b82f6} .act.trim{--a:#f59e0b}
-  .act.sell{--a:#ef4444} .act.cash{--a:#64748b}
+  .act.buy{--a:#22c55e} .act.hold{--a:#3b82f6} .act.sell{--a:#ef4444}
   .act{background:var(--a,var(--accent))}
   .areason{color:var(--muted);font-size:13.5px;flex:1;min-width:200px;line-height:1.5}
 
@@ -149,7 +148,7 @@ const I18N = {
       moods:{Bull:"Uptrend — the system rides risk-on.",Bear:"Downtrend — the system turns defensive.",
              Sideways:"Range-bound — selective, needs a stronger signal.",
              Crisis:"Stress regime — capital protection first."},
-      acts:{BUY:"Buy",ADD:"Add",HOLD:"Hold",TRIM:"Trim",SELL:"Sell",CASH:"Cash"}},
+      acts:{BUY:"Buy",SELL:"Sell",HOLD:"Hold"}},
   zh:{tag:"跟随市场状态的实时信号看板", loading:"正在加载实时信号…",
       forecast:"未来5日预测", exposure:"目标仓位", vol:"年化波动",
       conf:"状态置信度", universe:"标的 — 点击切换",
@@ -160,7 +159,7 @@ const I18N = {
       moods:{Bull:"上升趋势 —— 系统顺势持仓。",Bear:"下降趋势 —— 系统转为防守。",
              Sideways:"区间震荡 —— 谨慎，需要更强信号。",
              Crisis:"压力状态 —— 优先保护本金。"},
-      acts:{BUY:"买入",ADD:"加仓",HOLD:"持有",TRIM:"减仓",SELL:"卖出",CASH:"空仓"}}
+      acts:{BUY:"买入",SELL:"卖出",HOLD:"持有"}}
 };
 const REG = {
   Bull:    {en:"Bull",zh:"牛市",     a:"#22c55e",a2:"#16a34a",energy:.42},
@@ -168,7 +167,7 @@ const REG = {
   Sideways:{en:"Sideways",zh:"震荡", a:"#f59e0b",a2:"#d97706",energy:.55},
   Crisis:  {en:"Crisis",zh:"危机",   a:"#a855f7",a2:"#9333ea",energy:1.0}
 };
-const ACTCLS = {BUY:"buy",ADD:"add",HOLD:"hold",TRIM:"trim",SELL:"sell",CASH:"cash"};
+const ACTCLS = {BUY:"buy",SELL:"sell",HOLD:"hold"};
 const pct = (x,d=1)=> (x>=0?"+":"") + (x*100).toFixed(d) + "%";
 
 let DATA=null, LANG="en", SEL=null, ORDER=[];
