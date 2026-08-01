@@ -58,7 +58,7 @@
         box-shadow:0 0 0 0 var(--accent);animation:pulse 2.4s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}
         70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
-  .mood{color:var(--muted);font-size:13.5px;margin-top:10px;max-width:34ch}
+  .mood{color:var(--muted);font-size:13.5px;margin-top:10px;white-space:nowrap}
   .price{text-align:right;min-width:150px}
   .px{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
   .chg{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
@@ -116,6 +116,7 @@
     .mets{grid-template-columns:repeat(2,1fr)}
     .name,.px{font-size:25px}
     .price{text-align:left}
+    .mood{white-space:normal}
   }
   @media(prefers-reduced-motion:reduce){
     #flow{display:none}.dot{animation:none}*{transition-duration:.25s!important}
