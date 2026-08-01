@@ -204,7 +204,7 @@ function render(){
         <div class="htitle">
           <div class="sym">${SEL}</div>
           <div class="name">${s.label}</div>
-          <span class="badge"><span class="dot"></span>${r[LANG]} · ${s.regime}</span>
+          <span class="badge"><span class="dot"></span>${s.regime}</span>
           <div class="mood">${t.moods[s.regime]||""}</div>
         </div>
         <div class="price">
@@ -247,7 +247,7 @@ function render(){
       return `<button class="card ${sym===SEL?'sel':''}" data-sym="${sym}" style="--ca:${rr.a}">
         <span class="bar"></span>
         <div class="cs">${sym}</div>
-        <div class="cr">${rr[LANG]} · ${x.regime}</div>
+        <div class="cr">${x.regime}</div>
         <div class="cadv">${(I18N[LANG].acts[x.advice]||x.advice)} · ${Math.round(x.position*100)}%</div>
         <div class="cpx">$${x.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>
       </button>`; }).join("")}</div>`;
