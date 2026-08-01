@@ -1,0 +1,44 @@
+name: Update dashboard signals
+
+# Refresh docs/data/signals.json after the US close on trading days.
+# The model is daily-close, so once per weekday is the right cadence.
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"   # 22:30 UTC ≈ after the US market close
+  workflow_dispatch:            # allow manual runs from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-dashboard
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run inference (retrains from the committed CSV, then fetches live data)
+        run: python docs/update_signals.py
+
+      - name: Commit refreshed signals
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- docs/data/signals.json; then
+            echo "No change in signals.json — nothing to commit."
+          else
+            git add docs/data/signals.json
+            git commit -m "chore: refresh dashboard signals ($(date -u +%Y-%m-%d))"
+            git push
+          fi

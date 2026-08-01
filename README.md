@@ -55,6 +55,23 @@ system delivers **Sharpe 1.05 vs 0.69** for buy-and-hold and **max drawdown −1
 
 ---
 
+## Live dashboard
+
+An animated board runs the full pipeline on six liquid names — **SPY, QQQ, AAPL, NVDA, MSFT, GOOGL** —
+and shows, for each, today's regime, the 5-day forecast and a buy/sell call. The color theme follows the
+selected name's regime. A GitHub Actions job refreshes the signals **once per trading day** (the model is
+daily-close), pulling live prices from Yahoo, 2y/10y yields from the U.S. Treasury, and VIX live.
+
+**▶ [View the live board](https://davidxu277.github.io/alpha-timing/)** · *research only — not investment advice.*
+
+```bash
+python build_models.py            # one-time: cache the trained stack locally (optional)
+python docs/update_signals.py     # fetch live data + write docs/data/signals.json
+# then open docs/index.html (e.g. `python -m http.server` inside docs/)
+```
+
+---
+
 ## How it works (step by step)
 
 ### 1 · Regime nowcaster

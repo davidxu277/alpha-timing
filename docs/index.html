@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alpha Timing — Live Signal Board</title>
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#0f1620; --panel:rgba(255,255,255,.045);
+    --panel-brd:rgba(255,255,255,.09); --ink:#e8edf4; --muted:#8b98a9; --faint:#5b6675;
+    --accent:#22c55e; --accent2:#16a34a; --accent-soft:rgba(34,197,94,.14);
+    --pos:#22c55e; --neg:#ef4444;
+    --r:18px; --tr:.7s cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    background:var(--bg); color:var(--ink); overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    transition:background var(--tr);
+  }
+  #flow{position:fixed;inset:0;z-index:0;opacity:.55;transition:opacity var(--tr)}
+  .glow{position:fixed;z-index:0;border-radius:50%;filter:blur(90px);opacity:.30;
+        pointer-events:none;transition:background var(--tr),opacity var(--tr)}
+  .glow.a{width:46vw;height:46vw;top:-14vw;right:-10vw;background:var(--accent)}
+  .glow.b{width:38vw;height:38vw;bottom:-16vw;left:-12vw;background:var(--accent2)}
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:26px 20px 60px}
+
+  /* top bar */
+  .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.02em}
+  .mark{width:30px;height:30px;border-radius:8px;position:relative;overflow:hidden;
+        background:linear-gradient(135deg,var(--accent),var(--accent2));transition:background var(--tr);
+        box-shadow:0 4px 16px var(--accent-soft)}
+  .mark::after{content:"";position:absolute;left:14%;right:14%;bottom:26%;height:11%;
+        background:rgba(255,255,255,.9);border-radius:2px;
+        clip-path:polygon(0 100%,22% 55%,44% 72%,72% 12%,100% 0,100% 100%)}
+  .brand small{display:block;font-weight:500;font-size:11px;color:var(--muted);letter-spacing:.06em}
+  .top .sp{flex:1}
+  .upd{font-size:12px;color:var(--muted);text-align:right;line-height:1.5}
+  .upd b{color:var(--ink);font-weight:600}
+  .lang{margin-left:12px;display:inline-flex;border:1px solid var(--panel-brd);border-radius:999px;overflow:hidden}
+  .lang button{background:none;border:0;color:var(--muted);font:inherit;font-size:12px;
+        padding:5px 11px;cursor:pointer;transition:.2s}
+  .lang button.on{background:var(--accent);color:#04121e;font-weight:700}
+
+  /* hero */
+  .hero{border:1px solid var(--panel-brd);border-radius:var(--r);overflow:hidden;
+        background:linear-gradient(160deg,var(--panel),rgba(255,255,255,.015));
+        backdrop-filter:blur(8px);position:relative;transition:border-color var(--tr)}
+  .hero::before{content:"";position:absolute;inset:0;background:
+        radial-gradient(120% 90% at 100% 0,var(--accent-soft),transparent 60%);
+        transition:background var(--tr);pointer-events:none}
+  .hero-in{position:relative;padding:26px 28px}
+  .hrow{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .htitle{flex:1;min-width:220px}
+  .sym{font-size:13px;color:var(--muted);letter-spacing:.14em;font-weight:600;text-transform:uppercase}
+  .name{font-size:30px;font-weight:800;margin:2px 0 12px;line-height:1.05}
+  .badge{display:inline-flex;align-items:center;gap:9px;padding:7px 15px 7px 12px;border-radius:999px;
+        background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
+        color:var(--accent);font-weight:700;font-size:14px;transition:var(--tr)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);
+        box-shadow:0 0 0 0 var(--accent);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent)}
+        70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .mood{color:var(--muted);font-size:13.5px;margin-top:10px;max-width:34ch}
+  .price{text-align:right;min-width:150px}
+  .px{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+  .chg{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+  .up{color:var(--pos)} .down{color:var(--neg)}
+
+  /* advice */
+  .advice{margin-top:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+        padding:16px 18px;border-radius:14px;background:rgba(0,0,0,.22);
+        border:1px solid var(--panel-brd)}
+  .act{font-size:22px;font-weight:800;letter-spacing:.01em;padding:6px 16px;border-radius:11px;
+        background:var(--accent);color:#04121e;white-space:nowrap;transition:background var(--tr)}
+  .act.buy,.act.add{--a:#22c55e} .act.hold{--a:#3b82f6} .act.trim{--a:#f59e0b}
+  .act.sell{--a:#ef4444} .act.cash{--a:#64748b}
+  .act{background:var(--a,var(--accent))}
+  .areason{color:var(--muted);font-size:13.5px;flex:1;min-width:200px;line-height:1.5}
+
+  /* metrics */
+  .mets{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  .met{border:1px solid var(--panel-brd);border-radius:13px;padding:13px 14px;background:var(--panel)}
+  .met .k{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+  .met .v{font-size:20px;font-weight:800;margin-top:5px;font-variant-numeric:tabular-nums}
+  .met .s{font-size:11px;color:var(--faint);margin-top:2px}
+
+  /* chart */
+  .chart{margin-top:16px;border:1px solid var(--panel-brd);border-radius:var(--r);
+        background:var(--panel);padding:16px 12px 10px}
+  .chart .cap{display:flex;justify-content:space-between;align-items:baseline;
+        padding:0 6px 6px;font-size:12px;color:var(--muted)}
+  .chart .cap b{color:var(--ink);font-weight:600}
+  .leg{display:flex;gap:14px;font-size:11px;color:var(--muted)}
+  .leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  #spark{display:block;width:100%;height:180px}
+
+  /* rail */
+  .rail-h{margin:26px 4px 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .rail{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}
+  .card{border:1px solid var(--panel-brd);border-radius:14px;padding:13px 12px;cursor:pointer;
+        background:var(--panel);position:relative;overflow:hidden;transition:.25s;text-align:left}
+  .card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--ca) 50%,transparent)}
+  .card.sel{border-color:var(--ca);background:color-mix(in srgb,var(--ca) 12%,var(--panel))}
+  .card .bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ca)}
+  .card .cs{font-weight:800;font-size:14px}
+  .card .cr{font-size:11px;color:var(--ca);font-weight:700;margin-top:3px}
+  .card .cadv{font-size:11px;color:var(--muted);margin-top:6px}
+  .card .cpx{font-size:11px;color:var(--faint);margin-top:3px;font-variant-numeric:tabular-nums}
+
+  .foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--panel-brd);
+        font-size:12px;color:var(--faint);line-height:1.7}
+  .foot a{color:var(--muted)}
+  .warn{color:#f59e0b}
+
+  .err{padding:40px;text-align:center;color:var(--muted)}
+  @media(max-width:720px){
+    .rail{grid-template-columns:repeat(3,1fr)}
+    .mets{grid-template-columns:repeat(2,1fr)}
+    .name,.px{font-size:25px}
+    .price{text-align:left}
+  }
+  @media(prefers-reduced-motion:reduce){
+    #flow{display:none}.dot{animation:none}*{transition-duration:.25s!important}
+  }
+</style>
+</head>
+<body>
+<canvas id="flow"></canvas>
+<div class="glow a"></div><div class="glow b"></div>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <span class="mark"></span>
+      <span>ALPHA TIMING<small data-i18n="tag">Regime-aware live signal board</small></span>
+    </div>
+    <span class="sp"></span>
+    <div class="upd" id="upd"></div>
+    <div class="lang">
+      <button data-lang="en" class="on">EN</button>
+      <button data-lang="zh">中文</button>
+    </div>
+  </div>
+
+  <div id="app"><div class="err" data-i18n="loading">Loading live signals…</div></div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+const I18N = {
+  en:{tag:"Regime-aware live signal board", loading:"Loading live signals…",
+      forecast:"5-day forecast", exposure:"Target exposure", vol:"Volatility (ann.)",
+      conf:"Regime confidence", universe:"Universe — tap to switch",
+      chartCap:"Price & model exposure — last 120 trading days", price:"price",
+      expo:"exposure", now:"now",
+      foot:"Signals refresh <b>once per trading day</b> — the model is daily-close, so the numbers change with each new close; the motion here is decorative. Prices from Yahoo, 2y/10y yields from the U.S. Treasury, VIX live, policy-rate & unemployment carried from last published value. <span class='warn'>Research and education only — not investment advice.</span>",
+      updated:"Updated", asof:"data as of",
+      moods:{Bull:"Uptrend — the system rides risk-on.",Bear:"Downtrend — the system turns defensive.",
+             Sideways:"Range-bound — selective, needs a stronger signal.",
+             Crisis:"Stress regime — capital protection first."},
+      acts:{BUY:"Buy",ADD:"Add",HOLD:"Hold",TRIM:"Trim",SELL:"Sell",CASH:"Cash"}},
+  zh:{tag:"跟随市场状态的实时信号看板", loading:"正在加载实时信号…",
+      forecast:"未来5日预测", exposure:"目标仓位", vol:"年化波动",
+      conf:"状态置信度", universe:"标的 — 点击切换",
+      chartCap:"价格与模型仓位 — 近120个交易日", price:"价格",
+      expo:"仓位", now:"当前",
+      foot:"信号<b>每个交易日更新一次</b>——模型基于每日收盘，数值随每次收盘变化；此处的流动仅为装饰。价格来自 Yahoo，2年/10年国债收益率来自美国财政部，VIX 实时，政策利率与失业率沿用最近公布值。<span class='warn'>仅供研究与教育，非投资建议。</span>",
+      updated:"更新于", asof:"数据截至",
+      moods:{Bull:"上升趋势 —— 系统顺势持仓。",Bear:"下降趋势 —— 系统转为防守。",
+             Sideways:"区间震荡 —— 谨慎，需要更强信号。",
+             Crisis:"压力状态 —— 优先保护本金。"},
+      acts:{BUY:"买入",ADD:"加仓",HOLD:"持有",TRIM:"减仓",SELL:"卖出",CASH:"空仓"}}
+};
+const REG = {
+  Bull:    {en:"Bull",zh:"牛市",     a:"#22c55e",a2:"#16a34a",energy:.42},
+  Bear:    {en:"Bear",zh:"熊市",     a:"#ef4444",a2:"#dc2626",energy:.82},
+  Sideways:{en:"Sideways",zh:"震荡", a:"#f59e0b",a2:"#d97706",energy:.55},
+  Crisis:  {en:"Crisis",zh:"危机",   a:"#a855f7",a2:"#9333ea",energy:1.0}
+};
+const ACTCLS = {BUY:"buy",ADD:"add",HOLD:"hold",TRIM:"trim",SELL:"sell",CASH:"cash"};
+const pct = (x,d=1)=> (x>=0?"+":"") + (x*100).toFixed(d) + "%";
+
+let DATA=null, LANG="en", SEL=null, ORDER=[];
+
+fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
+  DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0]; render();
+}).catch(e=>{ document.getElementById("app").innerHTML =
+  '<div class="err">Could not load <code>data/signals.json</code>. Run <code>python docs/update_signals.py</code> first.</div>'; });
+
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
+  LANG=b.dataset.lang;
+  document.querySelectorAll(".lang button").forEach(x=>x.classList.toggle("on",x===b));
+  document.documentElement.lang = LANG==="zh"?"zh":"en";
+  if(DATA) render();
+});
+
+function setTheme(reg){
+  const r=REG[reg]||REG.Sideways, root=document.documentElement.style;
+  root.setProperty("--accent",r.a); root.setProperty("--accent2",r.a2);
+  root.setProperty("--accent-soft","color-mix(in srgb,"+r.a+" 15%,transparent)");
+  ENERGY = r.energy; ACOL = r.a;
+}
+
+function render(){
+  const t=I18N[LANG], d=DATA, s=d.tickers[SEL], r=REG[s.regime]||REG.Sideways;
+  setTheme(s.regime);
+
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k=el.dataset.i18n; if(t[k]) el.innerHTML=t[k];
+  });
+  document.getElementById("upd").innerHTML =
+    t.updated+" <b>"+d.updated_at+"</b><br>"+t.asof+" "+s.as_of;
+  document.getElementById("foot").innerHTML = t.foot;
+
+  const chg=s.change_1d, up=chg>=0;
+  const app=document.getElementById("app");
+  app.innerHTML = `
+    <div class="hero"><div class="hero-in">
+      <div class="hrow">
+        <div class="htitle">
+          <div class="sym">${SEL}</div>
+          <div class="name">${s.label}</div>
+          <span class="badge"><span class="dot"></span>${r[LANG]} · ${s.regime}</span>
+          <div class="mood">${t.moods[s.regime]||""}</div>
+        </div>
+        <div class="price">
+          <div class="px">$${s.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>
+          <div class="chg ${up?'up':'down'}">${up?'▲':'▼'} ${pct(Math.abs(chg),2)} <span style="color:var(--faint)">1d</span></div>
+        </div>
+      </div>
+
+      <div class="advice">
+        <span class="act ${ACTCLS[s.advice]}">${t.acts[s.advice]||s.advice}</span>
+        <span class="areason">${s.advice_reason}</span>
+      </div>
+
+      <div class="mets">
+        <div class="met"><div class="k">${t.forecast}</div>
+          <div class="v ${s.yhat_5d>=0?'up':'down'}">${pct(s.yhat_5d,2)}</div>
+          <div class="s">excess vs cash</div></div>
+        <div class="met"><div class="k">${t.exposure}</div>
+          <div class="v">${Math.round(s.position*100)}%</div>
+          <div class="s">0 = cash · 100% = full</div></div>
+        <div class="met"><div class="k">${t.vol}</div>
+          <div class="v">${Math.round(s.vol_annual*100)}%</div>
+          <div class="s">cap ${Math.round(s.vol_cap*100)}%</div></div>
+        <div class="met"><div class="k">${t.conf}</div>
+          <div class="v">${Math.round(s.regime_conf*100)}%</div>
+          <div class="s">classifier</div></div>
+      </div>
+
+      <div class="chart">
+        <div class="cap"><span>${t.chartCap}</span>
+          <span class="leg"><span><i style="background:var(--accent)"></i>${t.price}</span>
+          <span><i style="background:color-mix(in srgb,var(--accent) 35%,transparent)"></i>${t.expo}</span></span></div>
+        <canvas id="spark"></canvas>
+      </div>
+    </div></div>
+
+    <div class="rail-h">${t.universe}</div>
+    <div class="rail">${ORDER.map(sym=>{
+      const x=d.tickers[sym], rr=REG[x.regime]||REG.Sideways;
+      return `<button class="card ${sym===SEL?'sel':''}" data-sym="${sym}" style="--ca:${rr.a}">
+        <span class="bar"></span>
+        <div class="cs">${sym}</div>
+        <div class="cr">${rr[LANG]} · ${x.regime}</div>
+        <div class="cadv">${(I18N[LANG].acts[x.advice]||x.advice)} · ${Math.round(x.position*100)}%</div>
+        <div class="cpx">$${x.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>
+      </button>`; }).join("")}</div>`;
+
+  app.querySelectorAll(".card").forEach(c=>c.onclick=()=>{ SEL=c.dataset.sym; render(); });
+  CUR=s; requestAnimationFrame(()=>drawSpark(s));
+}
+let CUR=null;
+addEventListener("resize",()=>{ if(CUR) drawSpark(CUR); });
+
+/* ── sparkline: price line + exposure area + regime ribbon ──────────────── */
+function drawSpark(s){
+  const cv=document.getElementById("spark"); if(!cv) return;
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const W=cv.clientWidth, H=cv.clientHeight;
+  if(!W){ requestAnimationFrame(()=>drawSpark(s)); return; }
+  cv.width=W*dpr; cv.height=H*dpr;
+  const g=cv.getContext("2d"); g.scale(dpr,dpr);
+  const h=s.history, n=h.length; if(!n) return;
+  const px=h.map(p=>p.price), lo=Math.min(...px), hi=Math.max(...px);
+  const padT=8, ribH=10, botPad=ribH+6, plotH=H-padT-botPad;
+  const X=i=> (i/(n-1))*(W-2)+1;
+  const Yp=v=> padT + (1-(v-lo)/((hi-lo)||1))*plotH;
+  const Ye=v=> padT + (1-v)*plotH;                       // exposure 0..1 over full plot
+
+  // regime ribbon (bottom)
+  for(let i=0;i<n;i++){
+    const r=REG[h[i].regime]||REG.Sideways;
+    g.fillStyle=r.a; g.globalAlpha=.85;
+    g.fillRect(X(i)-((W-2)/n)/2, H-ribH, (W-2)/n+1, ribH);
+  }
+  g.globalAlpha=1;
+
+  // exposure area
+  g.beginPath(); g.moveTo(X(0),Ye(0));
+  for(let i=0;i<n;i++) g.lineTo(X(i),Ye(h[i].position));
+  g.lineTo(X(n-1),Ye(0)); g.closePath();
+  const grad=g.createLinearGradient(0,padT,0,padT+plotH);
+  grad.addColorStop(0, hexA(ACOL,.28)); grad.addColorStop(1, hexA(ACOL,.02));
+  g.fillStyle=grad; g.fill();
+
+  // price line + end marker (drawn fully in one pass)
+  g.lineWidth=2.2; g.strokeStyle=ACOL; g.lineJoin="round"; g.lineCap="round";
+  g.beginPath();
+  for(let i=0;i<n;i++){ const y=Yp(px[i]); i?g.lineTo(X(i),y):g.moveTo(X(i),y); }
+  g.stroke();
+  const lx=X(n-1),ly=Yp(px[n-1]);
+  g.fillStyle=hexA(ACOL,.25); g.beginPath(); g.arc(lx,ly,6,0,7); g.fill();
+  g.fillStyle=ACOL; g.beginPath(); g.arc(lx,ly,3.4,0,7); g.fill();
+}
+function hexA(hex,a){ const n=parseInt(hex.slice(1),16);
+  return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
+
+/* ── background flow field ──────────────────────────────────────────────── */
+let ENERGY=.5, ACOL="#22c55e";
+(function flow(){
+  const cv=document.getElementById("flow"), g=cv.getContext("2d");
+  let W,H,parts;
+  function reset(){ W=cv.width=innerWidth; H=cv.height=innerHeight;
+    parts=Array.from({length:Math.round(Math.min(90,W/16))},()=>({
+      x:Math.random()*W,y:Math.random()*H,
+      len:12+Math.random()*26, sp:.2+Math.random()*.8, off:Math.random()*6.28}));
+  }
+  reset(); addEventListener("resize",reset);
+  let tPrev=performance.now();
+  (function loop(now){
+    const dt=Math.min(33,now-tPrev); tPrev=now;
+    g.clearRect(0,0,W,H);
+    const spd=(.4+ENERGY*1.8), col=ACOL;
+    g.strokeStyle=col; g.lineWidth=1.1;
+    for(const p of parts){
+      const ang=Math.sin((p.x+now*.02*spd)/220)+Math.cos((p.y-now*.015*spd)/260)+p.off;
+      const vx=Math.cos(ang), vy=Math.sin(ang);
+      const nx=p.x+vx*p.sp*spd*dt*.06, ny=p.y+vy*p.sp*spd*dt*.06;
+      g.globalAlpha=.10+ENERGY*.16;
+      g.beginPath(); g.moveTo(p.x,p.y); g.lineTo(nx,ny); g.stroke();
+      p.x=nx; p.y=ny;
+      if(p.x<-20)p.x=W+20; if(p.x>W+20)p.x=-20;
+      if(p.y<-20)p.y=H+20; if(p.y>H+20)p.y=-20;
+    }
+    g.globalAlpha=1;
+    requestAnimationFrame(loop);
+  })(tPrev);
+})();
+</script>
+</body>
+</html>

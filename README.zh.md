@@ -49,6 +49,20 @@ Xu Shuyao · NUS · 2026 · [LinkedIn](https://www.linkedin.com/in/shuyao-xu-484
 
 ---
 
+## 实时看板
+
+一个流动的看板对六只流动性标的 —— **SPY、QQQ、AAPL、NVDA、MSFT、GOOGL** —— 各自跑一遍完整流程,分别展示当天的市场状态、未来5日预测与买卖建议。界面主色调跟随所选标的的市场状态。GitHub Actions 每个交易日刷新一次信号(模型基于每日收盘):价格来自 Yahoo,2年/10年国债收益率来自美国财政部,VIX 实时。
+
+**▶ [查看实时看板](https://davidxu277.github.io/alpha-timing/)** · *仅供研究,非投资建议。*
+
+```bash
+python build_models.py            # 一次性:把训练好的模型缓存到本地(可选)
+python docs/update_signals.py     # 拉取实时数据 + 写入 docs/data/signals.json
+# 然后打开 docs/index.html(例如在 docs/ 里运行 `python -m http.server`)
+```
+
+---
+
 ## 工作原理(逐步讲)
 
 ### 1 · 状态分类器

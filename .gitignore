@@ -8,3 +8,6 @@ __pycache__/
 
 # Ignore generated data by default, but ship the source dataset (Apache 2.0, see README)
 *.parquet
+
+# Local model cache for the dashboard (CI retrains from the committed CSV instead)
+docs/data/models.pkl.gz

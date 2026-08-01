@@ -197,17 +197,22 @@ def select_thresholds(df: pd.DataFrame):
 
 
 # ── 6. SPY test ───────────────────────────────────────────────────────────────
-def download_spy() -> pd.DataFrame:
-    params = urlencode({"period1": int(pd.Timestamp("2005-01-01", tz="UTC").timestamp()),
+def download_yahoo(symbol: str, start: str = "2005-01-01") -> pd.DataFrame:
+    """Daily adjusted-close history for any symbol from Yahoo (no key)."""
+    params = urlencode({"period1": int(pd.Timestamp(start, tz="UTC").timestamp()),
                         "period2": int(pd.Timestamp.now(tz="UTC").timestamp()),
                         "interval": "1d", "events": "history", "includeAdjustedClose": "true"})
-    req = Request(f"https://query2.finance.yahoo.com/v8/finance/chart/SPY?{params}",
+    req = Request(f"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?{params}",
                   headers={"User-Agent": "Mozilla/5.0"})
     with urlopen(req, timeout=30) as resp:
         data = json.loads(resp.read())["chart"]["result"][0]
     dates = pd.to_datetime(data["timestamp"], unit="s", utc=True).tz_convert(None).normalize()
     return pd.DataFrame({"date": dates,
                          "close": data["indicators"]["adjclose"][0]["adjclose"]}).dropna()
+
+
+def download_spy() -> pd.DataFrame:
+    return download_yahoo("SPY")
 
 
 def spy_test(clf, scaler, spec, th_on, th_off) -> None:
