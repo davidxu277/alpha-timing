@@ -23,8 +23,14 @@
   #flow{position:fixed;inset:0;z-index:0;opacity:.55;transition:opacity var(--tr)}
   .glow{position:fixed;z-index:0;border-radius:50%;filter:blur(90px);opacity:.30;
         pointer-events:none;transition:background var(--tr),opacity var(--tr)}
-  .glow.a{width:46vw;height:46vw;top:-14vw;right:-10vw;background:var(--accent)}
-  .glow.b{width:38vw;height:38vw;bottom:-16vw;left:-12vw;background:var(--accent2)}
+  .glow.a{width:46vw;height:46vw;top:-14vw;right:-10vw;background:var(--accent);
+          animation:glowpulse 9s ease-in-out infinite alternate}
+  .glow.b{width:38vw;height:38vw;bottom:-16vw;left:-12vw;background:var(--accent2);
+          animation:glowpulse 12s ease-in-out infinite alternate}
+  @keyframes glowpulse{from{opacity:.22;transform:scale(1)}to{opacity:.36;transform:scale(1.14)}}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes chartwipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+  @keyframes sheen{0%,55%{left:-60%}78%,100%{left:135%}}
   .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:26px 20px 60px}
 
   /* top bar */
@@ -67,12 +73,18 @@
   .act{font-size:22px;font-weight:800;letter-spacing:.01em;padding:6px 16px;border-radius:11px;
         background:var(--accent);color:#04121e;white-space:nowrap;transition:background var(--tr)}
   .act.buy{--a:#22c55e} .act.hold{--a:#3b82f6} .act.sell{--a:#ef4444}
-  .act{background:var(--a,var(--accent))}
+  .act{background:var(--a,var(--accent));position:relative;overflow:hidden}
+  .act::after{content:"";position:absolute;top:0;left:-60%;width:38%;height:100%;
+        background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);
+        transform:skewX(-18deg);animation:sheen 4.2s ease-in-out infinite}
   .areason{color:var(--muted);font-size:13.5px;flex:1;min-width:200px;line-height:1.5}
 
   /* metrics */
   .mets{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
-  .met{border:1px solid var(--panel-brd);border-radius:13px;padding:13px 14px;background:var(--panel)}
+  .met{border:1px solid var(--panel-brd);border-radius:13px;padding:13px 14px;background:var(--panel);
+        transition:transform .2s,border-color .2s}
+  .met:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 40%,var(--panel-brd))}
+  .num{font-variant-numeric:tabular-nums}
   .met .k{font-size:11px;color:var(--ink);letter-spacing:.05em;text-transform:uppercase}
   .met .v{font-size:20px;font-weight:800;margin-top:5px;font-variant-numeric:tabular-nums}
   .met .s{font-size:11px;color:var(--faint);margin-top:2px}
@@ -85,7 +97,9 @@
   .chart .cap b{color:var(--ink);font-weight:600}
   .leg{display:flex;gap:14px;font-size:11px;color:var(--muted)}
   .leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-  #spark{display:block;width:100%;height:180px}
+  #spark{display:block;width:100%;height:180px;animation:chartwipe .75s cubic-bezier(.4,0,.2,1)}
+  .intro .hero{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+  .intro .card{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms + .1s)}
 
   /* rail */
   .rail-h{margin:26px 4px 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -114,7 +128,9 @@
     .mood{white-space:normal}
   }
   @media(prefers-reduced-motion:reduce){
-    #flow{display:none}.dot{animation:none}*{transition-duration:.25s!important}
+    #flow{display:none}
+    .dot,.glow,#spark,.act::after,.intro .hero,.intro .card{animation:none!important}
+    *{transition-duration:.25s!important}
   }
 </style>
 </head>
@@ -170,7 +186,30 @@ const REG = {
 const ACTCLS = {BUY:"buy",SELL:"sell",HOLD:"hold"};
 const pct = (x,d=1)=> (x>=0?"+":"") + (x*100).toFixed(d) + "%";
 
-let DATA=null, LANG="en", SEL=null, ORDER=[];
+// count-up number animation (values are stored per field so switching morphs old → new)
+const FMT = {
+  price:v=>"$"+v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),
+  pct2: v=>(v>=0?"+":"")+v.toFixed(2)+"%",
+  pct0: v=>Math.round(v)+"%"
+};
+const NUMFMT = {price:"price",yhat:"pct2",pos:"pct0",vol:"pct0",conf:"pct0"};
+const PREV = {};
+const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+function animateNums(){
+  document.querySelectorAll(".num").forEach(el=>{
+    const to=parseFloat(el.dataset.to), key=el.dataset.f, fmt=FMT[NUMFMT[key]];
+    const from = key in PREV ? PREV[key] : (key==="price" ? to*0.92 : 0);
+    if(reduce || document.hidden || from===to){ el.textContent=fmt(to); PREV[key]=to; return; }
+    const t0=performance.now(), DUR=640;
+    (function step(now){
+      const k=Math.min(1,(now-t0)/DUR), e=1-Math.pow(1-k,3);
+      el.textContent=fmt(from+(to-from)*e);
+      if(k<1) requestAnimationFrame(step); else { el.textContent=fmt(to); PREV[key]=to; }
+    })(t0);
+  });
+}
+
+let DATA=null, LANG="en", SEL=null, ORDER=[], FIRST=true;
 
 fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
   DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0]; render();
@@ -207,7 +246,7 @@ function render(){
           <div class="mood">${t.moods[s.regime]||""}</div>
         </div>
         <div class="price">
-          <div class="px">$${s.price.toLocaleString(undefined,{minimumFractionDigits:2})}</div>
+          <div class="px"><span class="num" data-f="price" data-to="${s.price}">${FMT.price(s.price)}</span></div>
           <div class="chg ${up?'up':'down'}">${up?'▲':'▼'} ${pct(Math.abs(chg),2)} <span style="color:var(--faint)">1d</span></div>
         </div>
       </div>
@@ -219,16 +258,16 @@ function render(){
 
       <div class="mets">
         <div class="met"><div class="k">${t.forecast}</div>
-          <div class="v ${s.yhat_5d>=0?'up':'down'}">${pct(s.yhat_5d,2)}</div>
+          <div class="v ${s.yhat_5d>=0?'up':'down'}"><span class="num" data-f="yhat" data-to="${s.yhat_5d*100}">${FMT.pct2(s.yhat_5d*100)}</span></div>
           <div class="s">excess vs cash</div></div>
         <div class="met"><div class="k">${t.exposure}</div>
-          <div class="v">${Math.round(s.position*100)}%</div>
+          <div class="v"><span class="num" data-f="pos" data-to="${s.position*100}">${FMT.pct0(s.position*100)}</span></div>
           <div class="s">0 = cash · 100% = full</div></div>
         <div class="met"><div class="k">${t.vol}</div>
-          <div class="v">${Math.round(s.vol_annual*100)}%</div>
+          <div class="v"><span class="num" data-f="vol" data-to="${s.vol_annual*100}">${FMT.pct0(s.vol_annual*100)}</span></div>
           <div class="s">cap ${Math.round(s.vol_cap*100)}%</div></div>
         <div class="met"><div class="k">${t.conf}</div>
-          <div class="v">${Math.round(s.regime_conf*100)}%</div>
+          <div class="v"><span class="num" data-f="conf" data-to="${s.regime_conf*100}">${FMT.pct0(s.regime_conf*100)}</span></div>
           <div class="s">classifier</div></div>
       </div>
 
@@ -241,9 +280,9 @@ function render(){
     </div></div>
 
     <div class="rail-h">${t.universe}</div>
-    <div class="rail">${ORDER.map(sym=>{
+    <div class="rail">${ORDER.map((sym,i)=>{
       const x=d.tickers[sym], rr=REG[x.regime]||REG.Sideways;
-      return `<button class="card ${sym===SEL?'sel':''}" data-sym="${sym}" style="--ca:${rr.a}">
+      return `<button class="card ${sym===SEL?'sel':''}" data-sym="${sym}" style="--ca:${rr.a};--i:${i}">
         <span class="bar"></span>
         <div class="cs">${sym}</div>
         <div class="cr">${x.regime}</div>
@@ -252,6 +291,8 @@ function render(){
       </button>`; }).join("")}</div>`;
 
   app.querySelectorAll(".card").forEach(c=>c.onclick=()=>{ SEL=c.dataset.sym; render(); });
+  app.classList.toggle("intro", FIRST); FIRST=false;
+  animateNums();
   CUR=s; requestAnimationFrame(()=>drawSpark(s));
 }
 let CUR=null;
@@ -306,7 +347,7 @@ let ENERGY=.5, ACOL="#22c55e";
   const cv=document.getElementById("flow"), g=cv.getContext("2d");
   let W,H,parts;
   function reset(){ W=cv.width=innerWidth; H=cv.height=innerHeight;
-    parts=Array.from({length:Math.round(Math.min(90,W/16))},()=>({
+    parts=Array.from({length:Math.round(Math.min(120,W/13))},()=>({
       x:Math.random()*W,y:Math.random()*H,
       len:12+Math.random()*26, sp:.2+Math.random()*.8, off:Math.random()*6.28}));
   }
@@ -321,7 +362,7 @@ let ENERGY=.5, ACOL="#22c55e";
       const ang=Math.sin((p.x+now*.02*spd)/220)+Math.cos((p.y-now*.015*spd)/260)+p.off;
       const vx=Math.cos(ang), vy=Math.sin(ang);
       const nx=p.x+vx*p.sp*spd*dt*.06, ny=p.y+vy*p.sp*spd*dt*.06;
-      g.globalAlpha=.10+ENERGY*.16;
+      g.globalAlpha=.13+ENERGY*.20;
       g.beginPath(); g.moveTo(p.x,p.y); g.lineTo(nx,ny); g.stroke();
       p.x=nx; p.y=ny;
       if(p.x<-20)p.x=W+20; if(p.x>W+20)p.x=-20;
