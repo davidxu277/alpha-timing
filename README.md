@@ -55,6 +55,28 @@ system delivers **Sharpe 1.05 vs 0.69** for buy-and-hold and **max drawdown −1
 
 ---
 
+## Premise — why learning from the past should work at all
+
+The whole system rests on the oldest idea in market analysis: **"history repeats itself."** It is the
+third of the **three premises of technical analysis** [[1]](#references) — the other two being *the market
+discounts everything* and *prices move in trends* — and it traces back to **Dow Theory** [[2]](#references).
+The reasoning is behavioral, not mystical: market outcomes are produced by human decisions, and human
+psychology under fear and greed is stable enough that **similar conditions tend to be followed by similar
+outcomes**, leaving recurring, identifiable patterns.
+
+That is exactly what this system operationalizes. The gradient-boosted specialists never forecast from a
+formula — each prediction is literally *the average forward return of the most similar historical days*
+([Regime specialists](#2--regime-specialists)). The classifier makes "similar conditions" precise by
+sorting each day into one of a few **recurring market states** — which is just the testable, econometric
+form of the same idea: **regime-switching** [[3]](#references).
+
+An honest caveat, in keeping with the rest of this README: *"history repeats"* is a **working assumption,
+not a law**. It sits in permanent tension with the efficient-market hypothesis, and the edge here is thin
+and event-driven ([Design decisions](#design-decisions--tradeoffs)). The system is a disciplined bet that
+**the past rhymes often enough to be worth trading** — not a claim that it must.
+
+---
+
 ## Live dashboard
 
 An animated board runs the full pipeline on six liquid names — **SPY, QQQ, AAPL, NVDA, MSFT, GOOGL** —
@@ -314,6 +336,16 @@ The entire system lives in a single file, [regime_trading.py](regime_trading.py)
 
 Event-driven edge (n ≈ 2 bear markets); regime labels are third-party (price/volatility-defined);
 single final test window; results assume daily-close execution at 5 bps.
+
+## References
+
+The intellectual premise (§ [Premise](#premise--why-learning-from-the-past-should-work-at-all)) and the modelling choices draw on:
+
+1. Murphy, J. J. (1999). *Technical Analysis of the Financial Markets*. New York Institute of Finance. — the three premises of technical analysis, including *"history repeats itself."*
+2. Rhea, R. (1932). *The Dow Theory*. Barron's. — the classical systematization of Charles Dow's editorials, from which the tenet descends.
+3. Hamilton, J. D. (1989). A New Approach to the Economic Analysis of Nonstationary Time Series and the Business Cycle. *Econometrica*, 57(2), 357–384. — regime-switching: markets cycle through a small number of recurring states.
+
+*(The nuance "history doesn't repeat itself, but it often rhymes" is popularly attributed to Mark Twain, though the attribution is unverified.)*
 
 ## License
 
