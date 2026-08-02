@@ -272,7 +272,7 @@ fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
 // ── opening screen: six ticker bubbles → tap one to enter its detail view ──
 function buildSplash(){
   const wrap=document.getElementById("bubbles");
-  const POS=[{l:"7%",t:"15%"},{l:"41%",t:"3%"},{r:"7%",t:"17%"},
+  const POS=[{l:"7%",t:"15%"},{l:"41%",t:"9%"},{r:"7%",t:"17%"},
              {l:"12%",t:"66%"},{r:"40%",t:"76%"},{r:"10%",t:"63%"}];
   wrap.innerHTML=ORDER.map((sym,i)=>{
     const x=DATA.tickers[sym], r=REG[x.regime]||REG.Sideways, up=x.change_1d>=0, p=POS[i%6];
