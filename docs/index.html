@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Alpha Timing — Live Signal Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0a0e14; --bg2:#0f1620; --panel:rgba(255,255,255,.045);
@@ -117,6 +120,46 @@
   .warn{color:#f59e0b}
 
   .err{padding:40px;text-align:center;color:var(--muted)}
+
+  /* ── splash / opening screen ─────────────────────────────────────────── */
+  #splash{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;text-align:center;
+        transition:opacity .6s ease,transform .6s ease}
+  #splash.gone{opacity:0;transform:scale(1.05);pointer-events:none}
+  .pre .wrap{visibility:hidden}
+  #splash .center{position:relative;z-index:2;padding:0 20px}
+  .wordmark{font-family:'Syne',-apple-system,system-ui,sans-serif;font-weight:800;
+        font-size:clamp(46px,9vw,108px);line-height:.98;letter-spacing:-.02em;cursor:pointer;
+        background:linear-gradient(180deg,#ffffff 40%,#9fb0c2);-webkit-background-clip:text;
+        background-clip:text;color:transparent;filter:drop-shadow(0 8px 46px rgba(34,197,94,.18));
+        transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+  .wordmark:hover{transform:scale(1.02)}
+  .tagline{margin-top:20px;font-size:12.5px;letter-spacing:.34em;color:var(--muted);text-transform:uppercase}
+  .byline{margin-top:15px;font-size:14px;color:var(--faint)}
+  .hint{margin-top:30px;font-size:12.5px;color:var(--faint)}
+  .hint b{color:var(--muted);font-weight:600}
+  .bubbles{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .bubble{position:absolute;pointer-events:auto;width:120px;height:120px;border-radius:50%;border:0;
+        background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--ca) 28%,#111823),#0b0f16 72%);
+        box-shadow:0 8px 32px color-mix(in srgb,var(--ca) 22%,transparent),
+                   inset 0 0 0 1.5px color-mix(in srgb,var(--ca) 48%,transparent);
+        display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;
+        animation:bob var(--bd,5s) ease-in-out infinite,bubblein .55s ease both}
+  .bubble:hover{box-shadow:0 14px 44px color-mix(in srgb,var(--ca) 42%,transparent),
+                   inset 0 0 0 2px color-mix(in srgb,var(--ca) 85%,transparent)}
+  .bubble .inner{display:flex;flex-direction:column;align-items:center;gap:3px;
+        transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+  .bubble:hover .inner{transform:scale(1.14)}
+  .bsym{font-weight:800;font-size:17px;color:#fff;letter-spacing:.01em}
+  .bpx{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .bchg{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+  @keyframes bubblein{from{opacity:0}to{opacity:1}}
+
+  @media(max-width:720px){
+    .bubble{width:88px;height:88px}
+    .bsym{font-size:14px}.bpx,.bchg{font-size:10px}
+  }
   @media(max-width:720px){
     .rail{grid-template-columns:repeat(3,1fr)}
     .mets{grid-template-columns:repeat(2,1fr)}
@@ -126,7 +169,7 @@
   }
   @media(prefers-reduced-motion:reduce){
     #flow{display:none}
-    .dot,.glow,#spark,.intro .hero,.intro .card{animation:none!important}
+    .dot,.glow,#spark,.intro .hero,.intro .card,.bubble{animation:none!important;opacity:1}
     *{transition-duration:.25s!important}
   }
 </style>
@@ -134,6 +177,17 @@
 <body>
 <canvas id="flow"></canvas>
 <div class="glow a"></div><div class="glow b"></div>
+<script>document.body.classList.add("pre");</script>
+
+<div id="splash">
+  <div class="bubbles" id="bubbles"></div>
+  <div class="center">
+    <div class="wordmark" id="wordmark">Alpha Timing</div>
+    <div class="tagline">Regime-aware market timing</div>
+    <div class="byline">Insights from Xu Shuyao · National University of Singapore</div>
+    <div class="hint">Tap a ticker to dive in — or press <b>Enter</b></div>
+  </div>
+</div>
 
 <div class="wrap">
   <div class="top">
@@ -209,9 +263,39 @@ function animateNums(){
 let DATA=null, LANG="en", SEL=null, ORDER=[], FIRST=true;
 
 fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
-  DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0]; render();
+  DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0]; buildSplash();
 }).catch(e=>{ document.getElementById("app").innerHTML =
   '<div class="err">Could not load <code>data/signals.json</code>. Run <code>python docs/update_signals.py</code> first.</div>'; });
+
+// ── opening screen: six ticker bubbles → tap one to enter its detail view ──
+function buildSplash(){
+  const wrap=document.getElementById("bubbles");
+  const POS=[{l:"12%",t:"20%"},{l:"39%",t:"8%"},{r:"12%",t:"22%"},
+             {l:"17%",t:"75%"},{r:"38%",t:"84%"},{r:"15%",t:"71%"}];
+  wrap.innerHTML=ORDER.map((sym,i)=>{
+    const x=DATA.tickers[sym], r=REG[x.regime]||REG.Sideways, up=x.change_1d>=0, p=POS[i%6];
+    const pos=(p.l?`left:${p.l};`:"")+(p.r?`right:${p.r};`:"")+`top:${p.t};`;
+    return `<button class="bubble" data-sym="${sym}" aria-label="${sym}"
+        style="${pos}--ca:${r.a};--bd:${(4.6+i*0.5).toFixed(1)}s;animation-delay:${(i*0.12).toFixed(2)}s">
+        <span class="inner">
+          <span class="bsym">${sym}</span>
+          <span class="bpx">$${x.price.toLocaleString(undefined,{minimumFractionDigits:2})}</span>
+          <span class="bchg ${up?"up":"down"}">${up?"▲":"▼"} ${(Math.abs(x.change_1d)*100).toFixed(2)}%</span>
+        </span></button>`;
+  }).join("");
+  wrap.querySelectorAll(".bubble").forEach(b=>b.onclick=()=>enter(b.dataset.sym));
+}
+function enter(sym){
+  const sp=document.getElementById("splash");
+  if(!DATA || sp.classList.contains("gone")) return;
+  SEL=sym||SEL||ORDER[0];
+  document.body.classList.remove("pre");
+  sp.classList.add("gone");
+  setTimeout(()=>{ sp.style.display="none"; }, 650);
+  FIRST=true; render();
+}
+document.getElementById("wordmark").onclick=()=>enter();
+addEventListener("keydown",e=>{ if(e.key==="Enter") enter(); });
 
 function setTheme(reg){
   const r=REG[reg]||REG.Sideways, root=document.documentElement.style;
