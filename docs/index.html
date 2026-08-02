@@ -6,7 +6,7 @@
 <title>Alpha Timing — Live Signal Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0a0e14; --bg2:#0f1620; --panel:rgba(255,255,255,.045);
@@ -128,8 +128,9 @@
   #splash.gone{opacity:0;transform:scale(1.05);pointer-events:none}
   .pre .wrap{visibility:hidden}
   #splash .center{position:relative;z-index:2;padding:0 20px}
-  .wordmark{font-family:'Syne',-apple-system,system-ui,sans-serif;font-weight:800;
-        font-size:clamp(46px,9vw,108px);line-height:.98;letter-spacing:-.02em;cursor:pointer;
+  .wordmark{font-family:'Chakra Petch',-apple-system,system-ui,sans-serif;font-weight:700;
+        font-size:clamp(44px,8.4vw,102px);line-height:1.16;letter-spacing:0;cursor:pointer;
+        padding-bottom:.1em;
         background:linear-gradient(180deg,#ffffff 40%,#9fb0c2);-webkit-background-clip:text;
         background-clip:text;color:transparent;filter:drop-shadow(0 8px 46px rgba(34,197,94,.18));
         transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
@@ -139,7 +140,7 @@
   .hint{margin-top:30px;font-size:12.5px;color:var(--faint)}
   .hint b{color:var(--muted);font-weight:600}
   .bubbles{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-  .bubble{position:absolute;pointer-events:auto;width:120px;height:120px;border-radius:50%;border:0;
+  .bubble{position:absolute;pointer-events:auto;width:180px;height:180px;border-radius:50%;border:0;
         background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--ca) 28%,#111823),#0b0f16 72%);
         box-shadow:0 8px 32px color-mix(in srgb,var(--ca) 22%,transparent),
                    inset 0 0 0 1.5px color-mix(in srgb,var(--ca) 48%,transparent);
@@ -150,15 +151,16 @@
   .bubble .inner{display:flex;flex-direction:column;align-items:center;gap:3px;
         transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
   .bubble:hover .inner{transform:scale(1.14)}
-  .bsym{font-weight:800;font-size:17px;color:#fff;letter-spacing:.01em}
-  .bpx{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-  .bchg{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+  .bubble .inner{gap:5px}
+  .bsym{font-weight:800;font-size:23px;color:#fff;letter-spacing:.01em}
+  .bpx{font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .bchg{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
   @keyframes bubblein{from{opacity:0}to{opacity:1}}
 
   @media(max-width:720px){
-    .bubble{width:88px;height:88px}
-    .bsym{font-size:14px}.bpx,.bchg{font-size:10px}
+    .bubble{width:128px;height:128px}
+    .bsym{font-size:17px}.bpx,.bchg{font-size:11px}
   }
   @media(max-width:720px){
     .rail{grid-template-columns:repeat(3,1fr)}
@@ -270,8 +272,8 @@ fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
 // ── opening screen: six ticker bubbles → tap one to enter its detail view ──
 function buildSplash(){
   const wrap=document.getElementById("bubbles");
-  const POS=[{l:"12%",t:"20%"},{l:"39%",t:"8%"},{r:"12%",t:"22%"},
-             {l:"17%",t:"75%"},{r:"38%",t:"84%"},{r:"15%",t:"71%"}];
+  const POS=[{l:"7%",t:"15%"},{l:"41%",t:"3%"},{r:"7%",t:"17%"},
+             {l:"12%",t:"66%"},{r:"40%",t:"76%"},{r:"10%",t:"63%"}];
   wrap.innerHTML=ORDER.map((sym,i)=>{
     const x=DATA.tickers[sym], r=REG[x.regime]||REG.Sideways, up=x.change_1d>=0, p=POS[i%6];
     const pos=(p.l?`left:${p.l};`:"")+(p.r?`right:${p.r};`:"")+`top:${p.t};`;
