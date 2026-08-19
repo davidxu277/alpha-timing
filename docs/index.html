@@ -185,6 +185,34 @@
     .dot,.glow,#spark,.intro .hero,.intro .card,.bubble{animation:none!important;opacity:1}
     *{transition-duration:.25s!important}
   }
+
+  /* ===================== LIGHT PREVIEW (Quant-GT-inspired) ===================== */
+  :root{
+    --bg:#f6f8f7; --bg2:#eef2f0; --panel:#ffffff;
+    --panel-brd:rgba(18,26,32,.10); --ink:#121a20; --muted:#5c6a72; --faint:#95a1a7;
+    --pos:#16a34a; --neg:#dc2626;
+  }
+  body{background:radial-gradient(58vw 40vw at 84% -8%,rgba(22,163,74,.06),transparent 60%),var(--bg)}
+  /* quiet the animated background for a clean, content-first look */
+  #flow{opacity:.13}
+  .glow{opacity:.06!important;animation:none!important;filter:blur(120px)}
+  /* solid white cards: hairline border + soft shadow (the reference's surface) */
+  .hero{background:#fff;box-shadow:0 1px 2px rgba(18,26,32,.05),0 10px 34px rgba(18,26,32,.06)}
+  .hero::before{opacity:.35}
+  .met,.chart{background:#fff}
+  .card{background:#fff}
+  .card:hover{box-shadow:0 12px 26px rgba(18,26,32,.10)}
+  .card.sel{background:color-mix(in srgb,var(--ca) 9%,#fff)}
+  .advice{background:#f3f6f4;border-color:var(--panel-brd)}
+  .act{color:#fff}
+  /* splash */
+  .wordmark{background:linear-gradient(180deg,#151d24,#465562);-webkit-background-clip:text;
+        background-clip:text;color:transparent;filter:drop-shadow(0 10px 32px rgba(22,163,74,.14))}
+  .bubble{background:radial-gradient(circle at 34% 26%,color-mix(in srgb,var(--ca) 14%,#fff),#fff 72%);
+        box-shadow:0 10px 30px color-mix(in srgb,var(--ca) 18%,transparent),
+                   inset 0 0 0 1.5px color-mix(in srgb,var(--ca) 42%,transparent)}
+  .bsym{color:#121a20}
+  .cx-line{background:rgba(18,26,32,.3)}
 </style>
 </head>
 <body>
@@ -242,10 +270,10 @@ const I18N = {
       acts:{BUY:"买入",SELL:"卖出",HOLD:"持有"}}
 };
 const REG = {
-  Bull:    {en:"Bull",zh:"牛市",     a:"#22c55e",a2:"#16a34a",energy:.42},
-  Bear:    {en:"Bear",zh:"熊市",     a:"#ef4444",a2:"#dc2626",energy:.82},
-  Sideways:{en:"Sideways",zh:"震荡", a:"#f59e0b",a2:"#d97706",energy:.55},
-  Crisis:  {en:"Crisis",zh:"危机",   a:"#a855f7",a2:"#9333ea",energy:1.0}
+  Bull:    {en:"Bull",zh:"牛市",     a:"#16a34a",a2:"#15803d",energy:.42},
+  Bear:    {en:"Bear",zh:"熊市",     a:"#dc2626",a2:"#b91c1c",energy:.82},
+  Sideways:{en:"Sideways",zh:"震荡", a:"#d97706",a2:"#b45309",energy:.55},
+  Crisis:  {en:"Crisis",zh:"危机",   a:"#9333ea",a2:"#7c3aed",energy:1.0}
 };
 const ACTCLS = {BUY:"buy",SELL:"sell",HOLD:"hold"};
 const pct = (x,d=1)=> (x>=0?"+":"") + (x*100).toFixed(d) + "%";
