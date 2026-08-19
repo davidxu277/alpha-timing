@@ -104,8 +104,10 @@
         box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 26%,transparent),
                    0 0 10px color-mix(in srgb,var(--accent) 55%,transparent);
         transform:translate(-50%,-50%);opacity:0;pointer-events:none;transition:opacity .12s;z-index:2}
-  .cx-read{color:var(--muted);font-variant-numeric:tabular-nums;transition:color .12s}
-  .cx-read.on{color:var(--accent);font-weight:700}
+  .cx-read{color:var(--muted);font-variant-numeric:tabular-nums}
+  .cx-read b{color:var(--ink);font-weight:700}
+  .cx-read .rd{color:var(--muted);font-weight:400}
+  .cx-read .up,.cx-read .down{font-weight:700}
   .intro .hero{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
   .intro .card{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms + .1s)}
 
@@ -451,12 +453,13 @@ function attachCrosshair(cv,geom){
     let i=Math.round((e.clientX-rect.left-1)/((W-2)||1)*(n-1));
     i=Math.max(0,Math.min(n-1,i));
     line.style.left=Xof(i)+"px"; dot.style.left=Xof(i)+"px"; dot.style.top=Ypof(px[i])+"px";
-    read.textContent="· $"+px[i].toFixed(2)+"  ·  "+
-      new Date(hist[i].date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
-    read.classList.add("on");
+    const chg=i>0?(px[i]/px[i-1]-1):0, up=chg>=0;
+    read.innerHTML="· <b>$"+px[i].toFixed(2)+"</b> <span class='"+(up?"up":"down")+"'>"+
+      (up?"▲":"▼")+" "+(Math.abs(chg)*100).toFixed(2)+"%</span> <span class='rd'>· "+
+      new Date(hist[i].date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+"</span>";
     line.style.opacity=dot.style.opacity=1;
   }
-  function hide(){ line.style.opacity=dot.style.opacity=0; read.textContent=read.dataset.def; read.classList.remove("on"); }
+  function hide(){ line.style.opacity=dot.style.opacity=0; read.textContent=read.dataset.def; }
   wrap.onpointermove=move; wrap.onpointerleave=hide; wrap.onpointercancel=hide;
 }
 function hexA(hex,a){ const n=parseInt(hex.slice(1),16);
