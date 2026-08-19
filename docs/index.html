@@ -97,6 +97,18 @@
   .leg{display:flex;gap:14px;font-size:11px;color:var(--muted)}
   .leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
   #spark{display:block;width:100%;height:180px;animation:chartwipe .75s cubic-bezier(.4,0,.2,1)}
+  .sparkwrap{position:relative;touch-action:pan-y}
+  .cx-line{position:absolute;width:1px;background:rgba(255,255,255,.32);opacity:0;
+        pointer-events:none;transition:opacity .12s;z-index:1}
+  .cx-dot{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--accent);
+        box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 26%,transparent),
+                   0 0 10px color-mix(in srgb,var(--accent) 55%,transparent);
+        transform:translate(-50%,-50%);opacity:0;pointer-events:none;transition:opacity .12s;z-index:2}
+  .cx-tip{position:absolute;transform:translateX(-50%);opacity:0;pointer-events:none;
+        transition:opacity .12s;background:rgba(9,13,19,.95);border:1px solid var(--panel-brd);
+        border-radius:9px;padding:5px 10px;font-size:12.5px;font-weight:700;white-space:nowrap;
+        color:var(--ink);z-index:3}
+  .cx-tip .d{color:var(--muted);font-size:10.5px;font-weight:500;display:block;margin-top:1px}
   .intro .hero{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
   .intro .card{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms + .1s)}
 
@@ -358,7 +370,8 @@ function render(){
         <div class="cap"><span>${t.chartCap}</span>
           <span class="leg"><span><i style="background:var(--accent)"></i>${t.price}</span>
           <span><i style="background:color-mix(in srgb,var(--accent) 35%,transparent)"></i>${t.expo}</span></span></div>
-        <canvas id="spark"></canvas>
+        <div class="sparkwrap"><canvas id="spark"></canvas>
+          <div class="cx-line"></div><div class="cx-dot"></div><div class="cx-tip"></div></div>
       </div>
     </div></div>
 
@@ -421,6 +434,34 @@ function drawSpark(s){
   const lx=X(n-1),ly=Yp(px[n-1]);
   g.fillStyle=hexA(ACOL,.25); g.beginPath(); g.arc(lx,ly,6,0,7); g.fill();
   g.fillStyle=ACOL; g.beginPath(); g.arc(lx,ly,3.4,0,7); g.fill();
+
+  attachCrosshair(cv,{n,W,padT,plotH,lo,hi,px,hist:h});
+}
+
+/* ── hover crosshair: vertical line + dot + price/date tooltip ──────────── */
+function attachCrosshair(cv,geom){
+  const wrap=cv.parentElement;
+  const line=wrap.querySelector(".cx-line"), dot=wrap.querySelector(".cx-dot"), tip=wrap.querySelector(".cx-tip");
+  if(!line) return;
+  const {n,W,padT,plotH,lo,hi,px,hist}=geom;
+  const Xof=i=> (i/(n-1))*(W-2)+1;
+  const Ypof=v=> padT + (1-(v-lo)/((hi-lo)||1))*plotH;
+  line.style.top=padT+"px"; line.style.height=plotH+"px";
+  function move(e){
+    const rect=cv.getBoundingClientRect();
+    let i=Math.round((e.clientX-rect.left-1)/((W-2)||1)*(n-1));
+    i=Math.max(0,Math.min(n-1,i));
+    const x=Xof(i), y=Ypof(px[i]);
+    line.style.left=x+"px"; dot.style.left=x+"px"; dot.style.top=y+"px";
+    tip.innerHTML="<b>$"+px[i].toFixed(2)+"</b><span class='d'>"+
+      new Date(hist[i].date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})+"</span>";
+    const half=tip.offsetWidth/2;
+    tip.style.left=Math.max(half+2,Math.min(W-half-2,x))+"px";
+    tip.style.top=Math.max(2,y-52)+"px";
+    line.style.opacity=dot.style.opacity=tip.style.opacity=1;
+  }
+  function hide(){ line.style.opacity=dot.style.opacity=tip.style.opacity=0; }
+  wrap.onpointermove=move; wrap.onpointerleave=hide; wrap.onpointercancel=hide;
 }
 function hexA(hex,a){ const n=parseInt(hex.slice(1),16);
   return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; }
