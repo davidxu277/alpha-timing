@@ -1,0 +1,39 @@
+{
+  "since": "2026-08-18",
+  "through": "2026-08-18",
+  "days": 1,
+  "chain_valid": true,
+  "tip_hash": "033939aee40fb67cf225daf5564ad177078398a28c08ef5de77fea9066c99b77",
+  "updated_at": "2026-08-20 14:01 UTC",
+  "paper": {
+    "SPY": {
+      "nav": 0.9995,
+      "return_pct": -0.05
+    },
+    "QQQ": {
+      "nav": 0.9995,
+      "return_pct": -0.05
+    },
+    "AAPL": {
+      "nav": 1.0,
+      "return_pct": 0.0
+    },
+    "NVDA": {
+      "nav": 0.99968,
+      "return_pct": -0.03
+    },
+    "MSFT": {
+      "nav": 0.999799,
+      "return_pct": -0.02
+    },
+    "GOOGL": {
+      "nav": 1.0,
+      "return_pct": 0.0
+    },
+    "portfolio": {
+      "nav": 0.999747,
+      "return_pct": -0.03
+    }
+  },
+  "note": "Forward paper record \u2014 positions logged before the outcome, never edited. Research only; not investment advice."
+}
