@@ -108,6 +108,13 @@
   .cx-read b{color:var(--ink);font-weight:700}
   .cx-read .rd{color:var(--muted);font-weight:400}
   .cx-read .up,.cx-read .down{font-weight:700}
+
+  /* track record */
+  .trkstat{padding:2px 6px 10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .trkstat b{font-weight:700}
+  #trk{display:block;width:100%;height:172px}
+  .trknote{padding:9px 6px 2px;font-size:11px;color:var(--faint)}
+
   .intro .hero{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
   .intro .card{animation:rise .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0)*55ms + .1s)}
 
@@ -301,10 +308,15 @@ function animateNums(){
   });
 }
 
-let DATA=null, LANG="en", SEL=null, ORDER=[], FIRST=true;
+let DATA=null, LANG="en", SEL=null, ORDER=[], FIRST=true, TRK=[];
 
-fetch("data/signals.json?_="+Date.now()).then(r=>r.json()).then(d=>{
-  DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0]; buildSplash();
+Promise.all([
+  fetch("data/signals.json?_="+Date.now()).then(r=>r.json()),
+  fetch("data/track_record.jsonl?_="+Date.now()).then(r=>r.ok?r.text():"").catch(()=>"")
+]).then(([d,txt])=>{
+  DATA=d; ORDER=Object.keys(d.tickers); SEL=ORDER[0];
+  TRK = txt ? txt.trim().split("\n").filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}}).filter(Boolean) : [];
+  buildSplash();
 }).catch(e=>{ document.getElementById("app").innerHTML =
   '<div class="err">Could not load <code>data/signals.json</code>. Run <code>python docs/update_signals.py</code> first.</div>'; });
 
@@ -402,6 +414,19 @@ function render(){
       </div>
     </div></div>
 
+    ${(TRK&&TRK.length)?`
+    <div class="chart trk">
+      <div class="cap"><span>Live paper track record <span class="rd" id="trksub">· building…</span></span>
+        <span class="leg">
+          <span><i style="background:var(--accent)"></i>Strategy</span>
+          <span><i style="background:#98a3ad"></i>Buy &amp; Hold</span>
+          <span><i style="background:#5c6bc0"></i>MA20&gt;60</span>
+        </span></div>
+      <div class="trkstat" id="trkstat"></div>
+      <canvas id="trk"></canvas>
+      <div class="trknote">NAV from 1.00 · positions logged before the outcome, never edited · hash-chained.</div>
+    </div>`:""}
+
     <div class="rail-h">${t.universe}</div>
     <div class="rail">${ORDER.map((sym,i)=>{
       const x=d.tickers[sym], rr=REG[x.regime]||REG.Sideways;
@@ -418,9 +443,58 @@ function render(){
     setTimeout(()=>app.classList.remove("intro"), 1100); }  // let entrance finish, then free hover transforms
   animateNums();
   CUR=s; requestAnimationFrame(()=>drawSpark(s));
+  if(TRK&&TRK.length) requestAnimationFrame(()=>drawTrk(SEL));
 }
 let CUR=null;
-addEventListener("resize",()=>{ if(CUR) drawSpark(CUR); });
+addEventListener("resize",()=>{ if(CUR) drawSpark(CUR); if(TRK&&TRK.length) drawTrk(SEL); });
+
+/* ── live paper track record: strategy vs Buy&Hold vs MA20>60 NAV curves ── */
+function trkSeries(sym){
+  const dates=[], strat=[], bh=[], ma=[]; let first=true, b=1.0;
+  for(const r of TRK){
+    const p=r.paper&&r.paper[sym]; if(!p) continue;
+    dates.push(r.date); strat.push(p.nav); ma.push(p.ma_nav!=null?p.ma_nav:null);
+    if(!first){ const rr=r.signals&&r.signals[sym]?r.signals[sym].ret_1d:0; b*=(1+rr); }
+    bh.push(b); first=false;
+  }
+  return {dates,strat,bh,ma};
+}
+function drawTrk(sym){
+  const cv=document.getElementById("trk"); if(!cv) return;
+  const S=trkSeries(sym), n=S.strat.length; if(!n) return;
+  const dpr=Math.min(devicePixelRatio||1,2), W=cv.clientWidth, H=cv.clientHeight;
+  if(!W){ requestAnimationFrame(()=>drawTrk(sym)); return; }
+  cv.width=W*dpr; cv.height=H*dpr; const g=cv.getContext("2d"); g.scale(dpr,dpr);
+  const pad=10;
+  const all=[...S.strat,...S.bh,...S.ma.filter(v=>v!=null),1.0];
+  let lo=Math.min(...all), hi=Math.max(...all); if(hi<=lo){hi=lo+0.01;lo-=0.01;}
+  const m=(hi-lo)*0.14; lo-=m; hi+=m;
+  const X=i=> n<2 ? W/2 : pad+(i/(n-1))*(W-2*pad);
+  const Y=v=> pad+(1-(v-lo)/(hi-lo))*(H-2*pad);
+
+  g.strokeStyle="rgba(18,26,32,.13)"; g.lineWidth=1; g.setLineDash([4,4]);
+  g.beginPath(); g.moveTo(pad,Y(1)); g.lineTo(W-pad,Y(1)); g.stroke(); g.setLineDash([]);
+
+  function line(arr,color,dash,w){
+    g.strokeStyle=color; g.lineWidth=w; g.lineJoin="round"; g.lineCap="round"; g.setLineDash(dash);
+    g.beginPath(); let started=false, lastI=-1;
+    for(let i=0;i<n;i++){ const v=arr[i]; if(v==null){started=false;continue;}
+      const x=X(i),y=Y(v); started?g.lineTo(x,y):g.moveTo(x,y); started=true; lastI=i; }
+    g.stroke(); g.setLineDash([]);
+    if(lastI>=0){ g.fillStyle=color; g.beginPath(); g.arc(X(lastI),Y(arr[lastI]),3.2,0,7); g.fill(); }
+  }
+  line(S.bh,"#98a3ad",[5,4],1.8);
+  line(S.ma,"#5c6bc0",[2,4],1.8);
+  line(S.strat,ACOL,[],2.4);
+
+  const last=a=>{ for(let i=a.length-1;i>=0;i--) if(a[i]!=null) return a[i]; return 1; };
+  const sp=v=>{ const x=(v-1)*100; return (x>=0?"+":"")+x.toFixed(2)+"%"; };
+  const st=document.getElementById("trkstat");
+  if(st) st.innerHTML=`<b style="color:${ACOL}">Strategy ${sp(last(S.strat))}</b> · `+
+    `Buy&amp;Hold ${sp(last(S.bh))} · MA20&gt;60 ${sp(last(S.ma))}`;
+  const sub=document.getElementById("trksub");
+  if(sub) sub.textContent=`· since ${S.dates[0]}, ${n} trading day${n>1?"s":""}`;
+}
 
 /* ── sparkline: price line + exposure area + regime ribbon ──────────────── */
 function drawSpark(s){

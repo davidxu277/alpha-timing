@@ -77,27 +77,52 @@ def verify(rows: list[dict]) -> tuple[bool, str]:
 
 
 # ── append one day ──────────────────────────────────────────────────────────
+def ma20_over_60(history: list[dict]) -> float:
+    """MA20>60 crossover benchmark: fully invested when the 20-day mean tops the 60-day.
+
+    Decided at today's close from the trailing price history — the third baseline
+    from the SPY backtest (System vs Buy&Hold vs MA20>60)."""
+    px = [float(p["price"]) for p in history]
+    if len(px) < 60:
+        return 0.0
+    return 1.0 if sum(px[-20:]) / 20.0 > sum(px[-60:]) / 60.0 else 0.0
+
+
 def build_day(sig: dict, last: dict | None) -> dict:
     """Compose the next ledger line: signals snapshot + causal paper-NAV step."""
     tickers = sig["tickers"]
     date = next(iter(tickers.values()))["as_of"]
 
     prev_paper = last["paper"] if last else {}
-    signals_out, paper_out, net_rets = {}, {}, []
+    signals_out, paper_out = {}, {}
+    net_rets, ma_net_rets = [], []
 
     for sym, s in tickers.items():
+        ret = float(s["change_1d"])                     # realized over the day just held
         pos_new = float(s["position"])
+        ma_new = ma20_over_60(s["history"])             # MA20>60 target, decided at close
+
+        # ── model strategy sleeve ──
         held = prev_paper.get(sym)                      # what we carried into today
         if held is None:                                # genesis: start flat in cash
             nav, pos_held, gross = 1.0, 0.0, 0.0
         else:
             nav, pos_held = float(held["nav"]), float(held["pos"])
-            ret = float(s["change_1d"])                 # realized over the day just held
             gross = pos_held * ret + (1.0 - pos_held) * CASH_D
             nav *= (1.0 + gross)
-        cost = COST * abs(pos_new - pos_held)           # rebalance to today's target
-        nav *= (1.0 - cost)
-        net_rets.append(gross - cost)
+        nav *= (1.0 - COST * abs(pos_new - pos_held))   # rebalance to today's target
+        net_rets.append(gross - COST * abs(pos_new - pos_held))
+
+        # ── MA20>60 benchmark sleeve (same accounting, mechanical rule) ──
+        ma_prev = prev_paper.get(sym, {}).get("ma_pos")
+        if ma_prev is None:                             # ma baseline starts flat
+            ma_nav, ma_held, ma_gross = 1.0, 0.0, 0.0
+        else:
+            ma_nav, ma_held = float(prev_paper[sym]["ma_nav"]), float(ma_prev)
+            ma_gross = ma_held * ret + (1.0 - ma_held) * CASH_D
+            ma_nav *= (1.0 + ma_gross)
+        ma_nav *= (1.0 - COST * abs(ma_new - ma_held))
+        ma_net_rets.append(ma_gross - COST * abs(ma_new - ma_held))
 
         signals_out[sym] = {
             "regime": s["regime"], "regime_conf": s["regime_conf"],
@@ -105,11 +130,14 @@ def build_day(sig: dict, last: dict | None) -> dict:
             "advice": s["advice"], "price": s["price"],
             "ret_1d": s["change_1d"], "yhat_5d": s["yhat_5d"],
         }
-        paper_out[sym] = {"nav": round(nav, 6), "pos": round(pos_new, 3)}
+        paper_out[sym] = {"nav": round(nav, 6), "pos": round(pos_new, 3),
+                          "ma_nav": round(ma_nav, 6), "ma_pos": round(ma_new, 3)}
 
-    port_prev = prev_paper.get("portfolio", {}).get("nav", 1.0)
-    port_nav = float(port_prev) * (1.0 + sum(net_rets) / len(net_rets)) if net_rets else 1.0
-    paper_out["portfolio"] = {"nav": round(port_nav, 6)}
+    def _port(key, rets):
+        base = float(prev_paper.get("portfolio", {}).get(key, 1.0))
+        return base * (1.0 + sum(rets) / len(rets)) if rets else 1.0
+    paper_out["portfolio"] = {"nav": round(_port("nav", net_rets), 6),
+                              "ma_nav": round(_port("ma_nav", ma_net_rets), 6)}
 
     core = {
         "date": date,
@@ -123,11 +151,39 @@ def build_day(sig: dict, last: dict | None) -> dict:
     return core
 
 
+def buyhold_navs(rows: list[dict]) -> dict:
+    """Equal-weight buy-and-hold benchmark, derived from the chained ret_1d.
+
+    Always fully invested from genesis (no entry cost); a per-ticker NAV plus the
+    equal-weight portfolio. Same universe and window as the strategy, so the two
+    curves are directly comparable."""
+    syms = list(rows[0]["signals"].keys())
+    bh = {s: 1.0 for s in syms}
+    port = 1.0
+    for r in rows[1:]:                                    # skip genesis (no prior holding)
+        rets = []
+        for s in syms:
+            ret = float(r["signals"][s]["ret_1d"])
+            bh[s] *= (1.0 + ret)
+            rets.append(ret)
+        port *= (1.0 + sum(rets) / len(rets))
+    out = {s: bh[s] for s in syms}
+    out["portfolio"] = port
+    return out
+
+
 def write_summary(rows: list[dict]) -> None:
     tip = rows[-1]
+    bh = buyhold_navs(rows)
     paper = {}
     for sym, p in tip["paper"].items():
-        paper[sym] = {"nav": p["nav"], "return_pct": round((p["nav"] - 1.0) * 100, 2)}
+        strat = (p["nav"] - 1.0) * 100
+        bench = (bh.get(sym, 1.0) - 1.0) * 100
+        ma = (p.get("ma_nav", 1.0) - 1.0) * 100
+        paper[sym] = {"nav": p["nav"], "return_pct": round(strat, 2),
+                      "buyhold_return_pct": round(bench, 2),
+                      "ma_return_pct": round(ma, 2),
+                      "vs_buyhold_pp": round(strat - bench, 2)}
     summary = {
         "since": rows[0]["date"],
         "through": tip["date"],
