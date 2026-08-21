@@ -100,6 +100,15 @@ Entering/exiting is the [dual-threshold hysteresis](#highlight-2--dual-threshold
 band; the finer sizing up/down comes from the [volatility target](#highlight-1--volatility-target-position-sizing)
 (vol falls → size up, vol rises → size down). Moves smaller than 3% count as no change.
 
+**Live paper track record.** Every trading day the board also appends one line to a public,
+append-only ledger (`docs/data/track_record.jsonl`): the day's signals plus a fully causal
+paper-trading NAV — yesterday's position earns today's realized return, 5 bps per rebalance, idle
+cash at 4%/yr. Each line is **hash-chained** to the previous one (any retroactive edit breaks the
+chain, and the public commit timestamps attest the dates), and the dashboard plots the resulting
+curve for each name against two benchmarks — **buy-and-hold** and **MA20>60**. Positions are logged
+*before* the outcome and never rewritten, so it accumulates as an honest forward test — the live
+complement to the backtest below. Research only — not investment advice.
+
 ```bash
 python build_models.py            # one-time: cache the trained stack locally (optional)
 python docs/update_signals.py     # fetch live data + write docs/data/signals.json
