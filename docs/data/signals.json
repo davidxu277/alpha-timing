@@ -1,34 +1,22 @@
 {
-  "updated_at": "2026-08-19 22:52 UTC",
+  "updated_at": "2026-08-21 22:52 UTC",
   "note": "Signals update once per trading day; the model is daily-close. Research only \u2014 not investment advice.",
   "tickers": {
     "SPY": {
       "label": "S&P 500 (SPY)",
       "regime": "Bull",
-      "regime_conf": 0.975,
-      "price": 769.06,
-      "change_1d": 0.0021,
-      "yhat_5d": 0.0053,
+      "regime_conf": 0.944,
+      "price": 765.72,
+      "change_1d": 0.0041,
+      "yhat_5d": 0.0066,
       "position": 1.0,
       "prev_position": 1.0,
-      "vol_annual": 0.136,
+      "vol_annual": 0.132,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Bull regime \u2014 forecast +0.53%; stay invested at target exposure.",
-      "as_of": "2026-08-19",
+      "advice_reason": "Bull regime \u2014 forecast +0.66%; stay invested at target exposure.",
+      "as_of": "2026-08-21",
       "history": [
-        {
-          "date": "2026-02-27",
-          "price": 682.36,
-          "regime": "Sideways",
-          "position": 1.0
-        },
-        {
-          "date": "2026-03-02",
-          "price": 682.75,
-          "regime": "Sideways",
-          "position": 1.0
-        },
         {
           "date": "2026-03-03",
           "price": 676.73,
@@ -736,36 +724,36 @@
           "price": 769.06,
           "regime": "Bull",
           "position": 1.0
+        },
+        {
+          "date": "2026-08-20",
+          "price": 762.6,
+          "regime": "Bull",
+          "position": 1.0
+        },
+        {
+          "date": "2026-08-21",
+          "price": 765.72,
+          "regime": "Bull",
+          "position": 1.0
         }
       ]
     },
     "QQQ": {
       "label": "Nasdaq-100 (QQQ)",
       "regime": "Sideways",
-      "regime_conf": 0.517,
-      "price": 716.08,
-      "change_1d": -0.002,
-      "yhat_5d": 0.0049,
+      "regime_conf": 0.646,
+      "price": 713.44,
+      "change_1d": 0.0035,
+      "yhat_5d": 0.0079,
       "position": 1.0,
       "prev_position": 1.0,
-      "vol_annual": 0.239,
+      "vol_annual": 0.225,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Sideways regime \u2014 forecast +0.49%; stay invested at target exposure.",
-      "as_of": "2026-08-19",
+      "advice_reason": "Sideways regime \u2014 forecast +0.79%; stay invested at target exposure.",
+      "as_of": "2026-08-21",
       "history": [
-        {
-          "date": "2026-02-27",
-          "price": 605.86,
-          "regime": "Sideways",
-          "position": 1.0
-        },
-        {
-          "date": "2026-03-02",
-          "price": 606.66,
-          "regime": "Sideways",
-          "position": 1.0
-        },
         {
           "date": "2026-03-03",
           "price": 600.16,
@@ -1473,36 +1461,36 @@
           "price": 716.08,
           "regime": "Sideways",
           "position": 1.0
+        },
+        {
+          "date": "2026-08-20",
+          "price": 710.93,
+          "regime": "Sideways",
+          "position": 1.0
+        },
+        {
+          "date": "2026-08-21",
+          "price": 713.44,
+          "regime": "Sideways",
+          "position": 1.0
         }
       ]
     },
     "AAPL": {
       "label": "Apple",
-      "regime": "Crisis",
-      "regime_conf": 0.384,
-      "price": 316.83,
-      "change_1d": 0.0219,
-      "yhat_5d": 0.0104,
-      "position": 0.714,
+      "regime": "Bear",
+      "regime_conf": 0.874,
+      "price": 309.35,
+      "change_1d": -0.0063,
+      "yhat_5d": -0.0017,
+      "position": 0.0,
       "prev_position": 0.0,
-      "vol_annual": 0.35,
-      "vol_cap": 0.714,
-      "advice": "BUY",
-      "advice_reason": "Crisis regime \u2014 5-day forecast (+1.04%) cleared the entry line; enter.",
-      "as_of": "2026-08-19",
+      "vol_annual": 0.325,
+      "vol_cap": 0.77,
+      "advice": "HOLD",
+      "advice_reason": "Bear regime \u2014 signal (-0.17%) below the entry line; stay in cash.",
+      "as_of": "2026-08-21",
       "history": [
-        {
-          "date": "2026-02-27",
-          "price": 263.71,
-          "regime": "Sideways",
-          "position": 0.0
-        },
-        {
-          "date": "2026-03-02",
-          "price": 264.25,
-          "regime": "Sideways",
-          "position": 0.0
-        },
         {
           "date": "2026-03-03",
           "price": 263.28,
@@ -2210,36 +2198,36 @@
           "price": 316.83,
           "regime": "Crisis",
           "position": 0.714
+        },
+        {
+          "date": "2026-08-20",
+          "price": 311.3,
+          "regime": "Sideways",
+          "position": 0.0
+        },
+        {
+          "date": "2026-08-21",
+          "price": 309.35,
+          "regime": "Bear",
+          "position": 0.0
         }
       ]
     },
     "NVDA": {
       "label": "NVIDIA",
       "regime": "Bull",
-      "regime_conf": 0.497,
-      "price": 217.56,
-      "change_1d": -0.0099,
-      "yhat_5d": 0.0034,
-      "position": 0.648,
-      "prev_position": 0.64,
-      "vol_annual": 0.386,
-      "vol_cap": 0.648,
+      "regime_conf": 0.451,
+      "price": 214.72,
+      "change_1d": -0.0098,
+      "yhat_5d": 0.0028,
+      "position": 0.656,
+      "prev_position": 0.656,
+      "vol_annual": 0.381,
+      "vol_cap": 0.656,
       "advice": "HOLD",
-      "advice_reason": "Bull regime \u2014 forecast +0.34%; stay invested at target exposure.",
-      "as_of": "2026-08-19",
+      "advice_reason": "Bull regime \u2014 forecast +0.28%; stay invested at target exposure.",
+      "as_of": "2026-08-21",
       "history": [
-        {
-          "date": "2026-02-27",
-          "price": 176.97,
-          "regime": "Bear",
-          "position": 0.0
-        },
-        {
-          "date": "2026-03-02",
-          "price": 182.26,
-          "regime": "Sideways",
-          "position": 0.526
-        },
         {
           "date": "2026-03-03",
           "price": 179.83,
@@ -2947,773 +2935,773 @@
           "price": 217.56,
           "regime": "Bull",
           "position": 0.648
+        },
+        {
+          "date": "2026-08-20",
+          "price": 216.85,
+          "regime": "Bull",
+          "position": 0.656
+        },
+        {
+          "date": "2026-08-21",
+          "price": 214.72,
+          "regime": "Bull",
+          "position": 0.656
         }
       ]
     },
     "MSFT": {
       "label": "Microsoft",
       "regime": "Crisis",
-      "regime_conf": 0.702,
-      "price": 484.31,
-      "change_1d": 0.0056,
-      "yhat_5d": 0.0161,
-      "position": 0.407,
-      "prev_position": 0.401,
-      "vol_annual": 0.614,
-      "vol_cap": 0.407,
+      "regime_conf": 0.695,
+      "price": 483.24,
+      "change_1d": 0.0043,
+      "yhat_5d": 0.0141,
+      "position": 0.415,
+      "prev_position": 0.414,
+      "vol_annual": 0.603,
+      "vol_cap": 0.415,
       "advice": "HOLD",
-      "advice_reason": "Crisis regime \u2014 forecast +1.61%; stay invested at target exposure.",
-      "as_of": "2026-08-19",
+      "advice_reason": "Crisis regime \u2014 forecast +1.41%; stay invested at target exposure.",
+      "as_of": "2026-08-21",
       "history": [
         {
-          "date": "2026-02-27",
-          "price": 391.89,
-          "regime": "Bear",
-          "position": 0.777
-        },
-        {
-          "date": "2026-03-02",
-          "price": 397.69,
-          "regime": "Bear",
-          "position": 0.761
-        },
-        {
           "date": "2026-03-03",
-          "price": 403.06,
+          "price": 402.3,
           "regime": "Bear",
           "position": 0.757
         },
         {
           "date": "2026-03-04",
-          "price": 404.32,
+          "price": 403.56,
           "regime": "Bear",
           "position": 0.793
         },
         {
           "date": "2026-03-05",
-          "price": 409.79,
+          "price": 409.02,
           "regime": "Bear",
           "position": 0.786
         },
         {
           "date": "2026-03-06",
-          "price": 408.08,
+          "price": 407.31,
           "regime": "Bear",
           "position": 0.961
         },
         {
           "date": "2026-03-09",
-          "price": 408.53,
+          "price": 407.76,
           "regime": "Bear",
           "position": 0.991
         },
         {
           "date": "2026-03-10",
-          "price": 404.88,
+          "price": 404.12,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-11",
-          "price": 404.0,
+          "price": 403.25,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-12",
-          "price": 400.99,
+          "price": 400.24,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-13",
-          "price": 394.7,
+          "price": 393.95,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-16",
-          "price": 399.09,
+          "price": 398.34,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-17",
-          "price": 398.55,
+          "price": 397.8,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-18",
-          "price": 390.94,
+          "price": 390.21,
           "regime": "Bear",
           "position": 1.0
         },
         {
           "date": "2026-03-19",
-          "price": 388.18,
+          "price": 387.45,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-20",
-          "price": 381.04,
+          "price": 380.33,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-23",
-          "price": 382.17,
+          "price": 381.45,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-24",
-          "price": 371.93,
+          "price": 371.24,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-25",
-          "price": 370.24,
+          "price": 369.54,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-26",
-          "price": 365.18,
+          "price": 364.49,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-27",
-          "price": 356.0,
+          "price": 355.33,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-30",
-          "price": 358.18,
+          "price": 357.51,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-03-31",
-          "price": 369.37,
+          "price": 368.68,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-01",
-          "price": 368.57,
+          "price": 367.88,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-02",
-          "price": 372.65,
+          "price": 371.95,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-06",
-          "price": 372.07,
+          "price": 371.38,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-07",
-          "price": 371.49,
+          "price": 370.79,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-08",
-          "price": 373.52,
+          "price": 372.82,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-09",
-          "price": 372.26,
+          "price": 371.56,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-10",
-          "price": 370.07,
+          "price": 369.37,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-13",
-          "price": 383.54,
+          "price": 382.82,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-14",
-          "price": 392.26,
+          "price": 391.52,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-04-15",
-          "price": 410.33,
+          "price": 409.56,
           "regime": "Sideways",
           "position": 0.795
         },
         {
           "date": "2026-04-16",
-          "price": 419.35,
+          "price": 418.56,
           "regime": "Crisis",
           "position": 0.0
         },
         {
           "date": "2026-04-17",
-          "price": 421.88,
+          "price": 421.08,
           "regime": "Bull",
           "position": 0.807
         },
         {
           "date": "2026-04-20",
-          "price": 417.17,
+          "price": 416.38,
           "regime": "Crisis",
           "position": 0.823
         },
         {
           "date": "2026-04-21",
-          "price": 423.24,
+          "price": 422.45,
           "regime": "Crisis",
           "position": 0.0
         },
         {
           "date": "2026-04-22",
-          "price": 431.98,
+          "price": 431.17,
           "regime": "Bull",
           "position": 0.0
         },
         {
           "date": "2026-04-23",
-          "price": 414.85,
+          "price": 414.07,
           "regime": "Crisis",
           "position": 0.0
         },
         {
           "date": "2026-04-24",
-          "price": 423.7,
+          "price": 422.91,
           "regime": "Bull",
           "position": 0.0
         },
         {
           "date": "2026-04-27",
-          "price": 423.9,
+          "price": 423.11,
           "regime": "Bull",
           "position": 0.0
         },
         {
           "date": "2026-04-28",
-          "price": 428.32,
+          "price": 427.52,
           "regime": "Bull",
           "position": 0.827
         },
         {
           "date": "2026-04-29",
-          "price": 423.54,
+          "price": 422.75,
           "regime": "Crisis",
           "position": 0.0
         },
         {
           "date": "2026-04-30",
-          "price": 406.9,
+          "price": 406.13,
           "regime": "Crisis",
           "position": 0.735
         },
         {
           "date": "2026-05-01",
-          "price": 413.54,
+          "price": 412.77,
           "regime": "Crisis",
           "position": 0.731
         },
         {
           "date": "2026-05-04",
-          "price": 412.73,
+          "price": 411.95,
           "regime": "Crisis",
           "position": 0.731
         },
         {
           "date": "2026-05-05",
-          "price": 410.49,
+          "price": 409.72,
           "regime": "Crisis",
           "position": 0.728
         },
         {
           "date": "2026-05-06",
-          "price": 413.07,
+          "price": 412.29,
           "regime": "Crisis",
           "position": 0.728
         },
         {
           "date": "2026-05-07",
-          "price": 419.86,
+          "price": 419.07,
           "regime": "Crisis",
           "position": 0.727
         },
         {
           "date": "2026-05-08",
-          "price": 414.22,
+          "price": 413.44,
           "regime": "Crisis",
           "position": 0.718
         },
         {
           "date": "2026-05-11",
-          "price": 411.77,
+          "price": 410.99,
           "regime": "Crisis",
           "position": 0.755
         },
         {
           "date": "2026-05-12",
-          "price": 406.89,
+          "price": 406.12,
           "regime": "Sideways",
           "position": 0.763
         },
         {
           "date": "2026-05-13",
-          "price": 404.33,
+          "price": 403.57,
           "regime": "Sideways",
           "position": 0.88
         },
         {
           "date": "2026-05-14",
-          "price": 408.55,
+          "price": 407.78,
           "regime": "Sideways",
           "position": 0.91
         },
         {
           "date": "2026-05-15",
-          "price": 421.01,
+          "price": 420.22,
           "regime": "Sideways",
           "position": 0.0
         },
         {
           "date": "2026-05-18",
-          "price": 422.62,
+          "price": 421.83,
           "regime": "Sideways",
           "position": 0.0
         },
         {
           "date": "2026-05-19",
-          "price": 416.52,
+          "price": 415.74,
           "regime": "Sideways",
           "position": 0.0
         },
         {
           "date": "2026-05-20",
-          "price": 420.15,
+          "price": 419.36,
           "regime": "Sideways",
           "position": 0.0
         },
         {
           "date": "2026-05-21",
-          "price": 419.09,
+          "price": 418.3,
           "regime": "Sideways",
           "position": 1.0
         },
         {
           "date": "2026-05-22",
-          "price": 418.57,
+          "price": 417.78,
           "regime": "Sideways",
           "position": 1.0
         },
         {
           "date": "2026-05-26",
-          "price": 416.03,
+          "price": 415.25,
           "regime": "Sideways",
           "position": 1.0
         },
         {
           "date": "2026-05-27",
-          "price": 412.67,
+          "price": 411.89,
           "regime": "Sideways",
           "position": 1.0
         },
         {
           "date": "2026-05-28",
-          "price": 426.99,
+          "price": 426.19,
           "regime": "Sideways",
           "position": 0.952
         },
         {
           "date": "2026-05-29",
-          "price": 450.24,
+          "price": 449.39,
           "regime": "Bull",
           "position": 0.881
         },
         {
           "date": "2026-06-01",
-          "price": 460.52,
+          "price": 459.65,
           "regime": "Bull",
           "position": 0.867
         },
         {
           "date": "2026-06-02",
-          "price": 441.31,
+          "price": 440.48,
           "regime": "Crisis",
           "position": 0.751
         },
         {
           "date": "2026-06-03",
-          "price": 427.34,
+          "price": 426.54,
           "regime": "Sideways",
           "position": 0.705
         },
         {
           "date": "2026-06-04",
-          "price": 428.05,
+          "price": 427.25,
           "regime": "Sideways",
           "position": 0.705
         },
         {
           "date": "2026-06-05",
-          "price": 416.67,
+          "price": 415.89,
           "regime": "Sideways",
           "position": 0.687
         },
         {
           "date": "2026-06-08",
-          "price": 411.74,
+          "price": 410.97,
           "regime": "Sideways",
           "position": 0.688
         },
         {
           "date": "2026-06-09",
-          "price": 403.41,
+          "price": 402.65,
           "regime": "Bear",
           "position": 0.676
         },
         {
           "date": "2026-06-10",
-          "price": 397.36,
+          "price": 396.61,
           "regime": "Bear",
           "position": 0.674
         },
         {
           "date": "2026-06-11",
-          "price": 390.34,
+          "price": 389.61,
           "regime": "Bear",
           "position": 0.666
         },
         {
           "date": "2026-06-12",
-          "price": 390.74,
+          "price": 390.01,
           "regime": "Bear",
           "position": 0.67
         },
         {
           "date": "2026-06-15",
-          "price": 399.76,
+          "price": 399.01,
           "regime": "Bear",
           "position": 0.684
         },
         {
           "date": "2026-06-16",
-          "price": 393.83,
+          "price": 393.09,
           "regime": "Bear",
           "position": 0.681
         },
         {
           "date": "2026-06-17",
-          "price": 378.91,
+          "price": 378.2,
           "regime": "Bear",
           "position": 0.648
         },
         {
           "date": "2026-06-18",
-          "price": 379.4,
+          "price": 378.69,
           "regime": "Bear",
           "position": 0.653
         },
         {
           "date": "2026-06-22",
-          "price": 367.34,
+          "price": 366.65,
           "regime": "Bear",
           "position": 0.633
         },
         {
           "date": "2026-06-23",
-          "price": 373.94,
+          "price": 373.24,
           "regime": "Bear",
           "position": 0.619
         },
         {
           "date": "2026-06-24",
-          "price": 365.46,
+          "price": 364.77,
           "regime": "Bear",
           "position": 0.612
         },
         {
           "date": "2026-06-25",
-          "price": 352.83,
+          "price": 352.17,
           "regime": "Bear",
           "position": 0.594
         },
         {
           "date": "2026-06-26",
-          "price": 372.97,
+          "price": 372.27,
           "regime": "Bear",
           "position": 0.548
         },
         {
           "date": "2026-06-29",
-          "price": 368.57,
+          "price": 367.88,
           "regime": "Bear",
           "position": 0.631
         },
         {
           "date": "2026-06-30",
-          "price": 373.02,
+          "price": 372.32,
           "regime": "Bear",
           "position": 0.648
         },
         {
           "date": "2026-07-01",
-          "price": 384.28,
+          "price": 383.56,
           "regime": "Bear",
           "position": 0.637
         },
         {
           "date": "2026-07-02",
-          "price": 390.49,
+          "price": 389.76,
           "regime": "Bear",
           "position": 0.643
         },
         {
           "date": "2026-07-06",
-          "price": 386.74,
+          "price": 386.01,
           "regime": "Bear",
           "position": 0.644
         },
         {
           "date": "2026-07-07",
-          "price": 388.84,
+          "price": 388.11,
           "regime": "Bear",
           "position": 0.656
         },
         {
           "date": "2026-07-08",
-          "price": 383.34,
+          "price": 382.62,
           "regime": "Bear",
           "position": 0.655
         },
         {
           "date": "2026-07-09",
-          "price": 384.36,
+          "price": 383.64,
           "regime": "Bear",
           "position": 0.663
         },
         {
           "date": "2026-07-10",
-          "price": 385.1,
+          "price": 384.38,
           "regime": "Bear",
           "position": 0.668
         },
         {
           "date": "2026-07-13",
-          "price": 390.99,
+          "price": 390.26,
           "regime": "Bear",
           "position": 0.67
         },
         {
           "date": "2026-07-14",
-          "price": 384.93,
+          "price": 384.21,
           "regime": "Bear",
           "position": 0.662
         },
         {
           "date": "2026-07-15",
-          "price": 395.63,
+          "price": 394.89,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-07-16",
-          "price": 401.1,
+          "price": 400.35,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-07-17",
-          "price": 393.82,
+          "price": 393.08,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-07-20",
-          "price": 402.29,
+          "price": 401.53,
           "regime": "Crisis",
           "position": 0.682
         },
         {
           "date": "2026-07-21",
-          "price": 397.75,
+          "price": 397.0,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-07-22",
-          "price": 390.34,
+          "price": 389.61,
           "regime": "Bear",
           "position": 0.0
         },
         {
           "date": "2026-07-23",
-          "price": 381.58,
+          "price": 380.86,
           "regime": "Bear",
           "position": 0.71
         },
         {
           "date": "2026-07-24",
-          "price": 381.7,
+          "price": 380.98,
           "regime": "Bear",
           "position": 0.772
         },
         {
           "date": "2026-07-27",
-          "price": 389.1,
+          "price": 388.37,
           "regime": "Bear",
           "position": 0.945
         },
         {
           "date": "2026-07-28",
-          "price": 393.35,
+          "price": 392.61,
           "regime": "Bear",
           "position": 0.959
         },
         {
           "date": "2026-07-29",
-          "price": 390.54,
+          "price": 389.81,
           "regime": "Bear",
           "position": 0.957
         },
         {
           "date": "2026-07-30",
-          "price": 451.1,
+          "price": 450.25,
           "regime": "Crisis",
           "position": 0.419
         },
         {
           "date": "2026-07-31",
-          "price": 464.72,
+          "price": 463.85,
           "regime": "Crisis",
           "position": 0.416
         },
         {
           "date": "2026-08-03",
-          "price": 487.65,
+          "price": 486.73,
           "regime": "Crisis",
           "position": 0.408
         },
         {
           "date": "2026-08-04",
-          "price": 492.81,
+          "price": 491.88,
           "regime": "Crisis",
           "position": 0.408
         },
         {
           "date": "2026-08-05",
-          "price": 487.46,
+          "price": 486.54,
           "regime": "Crisis",
           "position": 0.409
         },
         {
           "date": "2026-08-06",
-          "price": 499.86,
+          "price": 498.92,
           "regime": "Crisis",
           "position": 0.409
         },
         {
           "date": "2026-08-07",
-          "price": 499.99,
+          "price": 499.05,
           "regime": "Crisis",
           "position": 0.409
         },
         {
           "date": "2026-08-10",
-          "price": 506.06,
+          "price": 505.11,
           "regime": "Crisis",
           "position": 0.409
         },
         {
           "date": "2026-08-11",
-          "price": 503.81,
+          "price": 502.86,
           "regime": "Crisis",
           "position": 0.413
         },
         {
           "date": "2026-08-12",
-          "price": 492.43,
+          "price": 491.5,
           "regime": "Crisis",
           "position": 0.405
         },
         {
           "date": "2026-08-13",
-          "price": 496.88,
+          "price": 495.95,
           "regime": "Crisis",
           "position": 0.405
         },
         {
           "date": "2026-08-14",
-          "price": 495.4,
+          "price": 494.47,
           "regime": "Crisis",
           "position": 0.41
         },
         {
           "date": "2026-08-17",
-          "price": 480.35,
+          "price": 479.45,
           "regime": "Crisis",
           "position": 0.399
         },
         {
           "date": "2026-08-18",
-          "price": 481.63,
+          "price": 480.73,
           "regime": "Crisis",
           "position": 0.401
         },
         {
           "date": "2026-08-19",
-          "price": 484.31,
+          "price": 483.4,
           "regime": "Crisis",
           "position": 0.407
+        },
+        {
+          "date": "2026-08-20",
+          "price": 481.15,
+          "regime": "Crisis",
+          "position": 0.414
+        },
+        {
+          "date": "2026-08-21",
+          "price": 483.24,
+          "regime": "Crisis",
+          "position": 0.415
         }
       ]
     },
     "GOOGL": {
       "label": "Alphabet",
-      "regime": "Crisis",
-      "regime_conf": 0.511,
-      "price": 344.72,
-      "change_1d": 0.0015,
-      "yhat_5d": -0.0009,
-      "position": 0.0,
-      "prev_position": 0.0,
-      "vol_annual": 0.472,
-      "vol_cap": 0.53,
+      "regime": "Sideways",
+      "regime_conf": 0.377,
+      "price": 344.82,
+      "change_1d": 0.0122,
+      "yhat_5d": 0.0023,
+      "position": 0.636,
+      "prev_position": 0.638,
+      "vol_annual": 0.393,
+      "vol_cap": 0.636,
       "advice": "HOLD",
-      "advice_reason": "Crisis regime \u2014 signal (-0.09%) below the entry line; stay in cash.",
-      "as_of": "2026-08-19",
+      "advice_reason": "Sideways regime \u2014 forecast +0.23%; stay invested at target exposure.",
+      "as_of": "2026-08-21",
       "history": [
-        {
-          "date": "2026-02-27",
-          "price": 311.35,
-          "regime": "Bear",
-          "position": 1.0
-        },
-        {
-          "date": "2026-03-02",
-          "price": 306.12,
-          "regime": "Bear",
-          "position": 0.989
-        },
         {
           "date": "2026-03-03",
           "price": 303.19,
@@ -4421,6 +4409,18 @@
           "price": 344.72,
           "regime": "Crisis",
           "position": 0.0
+        },
+        {
+          "date": "2026-08-20",
+          "price": 340.67,
+          "regime": "Sideways",
+          "position": 0.638
+        },
+        {
+          "date": "2026-08-21",
+          "price": 344.82,
+          "regime": "Sideways",
+          "position": 0.636
         }
       ]
     }
