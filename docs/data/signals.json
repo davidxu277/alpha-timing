@@ -1,28 +1,22 @@
 {
-  "updated_at": "2026-08-29 03:49 UTC",
+  "updated_at": "2026-09-01 01:22 UTC",
   "note": "Signals update once per trading day; the model is daily-close. Research only \u2014 not investment advice.",
   "tickers": {
     "SPY": {
       "label": "S&P 500 (SPY)",
       "regime": "Bull",
-      "regime_conf": 0.919,
-      "price": 769.35,
-      "change_1d": -0.0023,
-      "yhat_5d": 0.0018,
+      "regime_conf": 0.884,
+      "price": 767.05,
+      "change_1d": -0.003,
+      "yhat_5d": 0.0009,
       "position": 1.0,
       "prev_position": 1.0,
-      "vol_annual": 0.104,
+      "vol_annual": 0.094,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Bull regime \u2014 forecast +0.18%; stay invested at target exposure.",
-      "as_of": "2026-08-28",
+      "advice_reason": "Bull regime \u2014 forecast +0.09%; stay invested at target exposure.",
+      "as_of": "2026-08-31",
       "history": [
-        {
-          "date": "2026-03-10",
-          "price": 673.6,
-          "regime": "Sideways",
-          "position": 1.0
-        },
         {
           "date": "2026-03-11",
           "price": 672.75,
@@ -736,30 +730,30 @@
           "price": 769.35,
           "regime": "Bull",
           "position": 1.0
+        },
+        {
+          "date": "2026-08-31",
+          "price": 767.05,
+          "regime": "Bull",
+          "position": 1.0
         }
       ]
     },
     "QQQ": {
       "label": "Nasdaq-100 (QQQ)",
       "regime": "Bull",
-      "regime_conf": 0.59,
-      "price": 716.43,
-      "change_1d": -0.0065,
-      "yhat_5d": 0.0014,
+      "regime_conf": 0.632,
+      "price": 716.76,
+      "change_1d": 0.0005,
+      "yhat_5d": -0.0028,
       "position": 1.0,
       "prev_position": 1.0,
-      "vol_annual": 0.184,
+      "vol_annual": 0.174,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Bull regime \u2014 forecast +0.14%; stay invested at target exposure.",
-      "as_of": "2026-08-28",
+      "advice_reason": "Bull regime \u2014 forecast -0.28%; stay invested at target exposure.",
+      "as_of": "2026-08-31",
       "history": [
-        {
-          "date": "2026-03-10",
-          "price": 606.34,
-          "regime": "Sideways",
-          "position": 0.0
-        },
         {
           "date": "2026-03-11",
           "price": 606.26,
@@ -1473,30 +1467,30 @@
           "price": 716.43,
           "regime": "Bull",
           "position": 1.0
+        },
+        {
+          "date": "2026-08-31",
+          "price": 716.76,
+          "regime": "Bull",
+          "position": 1.0
         }
       ]
     },
     "AAPL": {
       "label": "Apple",
       "regime": "Bull",
-      "regime_conf": 0.809,
-      "price": 319.7,
-      "change_1d": 0.0163,
-      "yhat_5d": 0.0022,
+      "regime_conf": 0.731,
+      "price": 316.85,
+      "change_1d": -0.0089,
+      "yhat_5d": 0.0025,
       "position": 1.0,
-      "prev_position": 0.0,
-      "vol_annual": 0.189,
+      "prev_position": 1.0,
+      "vol_annual": 0.179,
       "vol_cap": 1.0,
-      "advice": "BUY",
-      "advice_reason": "Bull regime \u2014 5-day forecast (+0.22%) cleared the entry line; enter.",
-      "as_of": "2026-08-28",
+      "advice": "HOLD",
+      "advice_reason": "Bull regime \u2014 forecast +0.25%; stay invested at target exposure.",
+      "as_of": "2026-08-31",
       "history": [
-        {
-          "date": "2026-03-10",
-          "price": 260.37,
-          "regime": "Bear",
-          "position": 0.0
-        },
         {
           "date": "2026-03-11",
           "price": 260.35,
@@ -2210,30 +2204,30 @@
           "price": 319.7,
           "regime": "Bull",
           "position": 1.0
+        },
+        {
+          "date": "2026-08-31",
+          "price": 316.85,
+          "regime": "Bull",
+          "position": 1.0
         }
       ]
     },
     "NVDA": {
       "label": "NVIDIA",
       "regime": "Crisis",
-      "regime_conf": 0.563,
-      "price": 217.55,
-      "change_1d": -0.0457,
-      "yhat_5d": 0.0075,
-      "position": 0.532,
-      "prev_position": 0.571,
-      "vol_annual": 0.47,
-      "vol_cap": 0.532,
-      "advice": "SELL",
-      "advice_reason": "Crisis regime \u2014 rising volatility trims the position.",
-      "as_of": "2026-08-28",
+      "regime_conf": 0.546,
+      "price": 220.78,
+      "change_1d": 0.0148,
+      "yhat_5d": 0.0086,
+      "position": 0.541,
+      "prev_position": 0.532,
+      "vol_annual": 0.462,
+      "vol_cap": 0.541,
+      "advice": "HOLD",
+      "advice_reason": "Crisis regime \u2014 forecast +0.86%; stay invested at target exposure.",
+      "as_of": "2026-08-31",
       "history": [
-        {
-          "date": "2026-03-10",
-          "price": 184.54,
-          "regime": "Sideways",
-          "position": 0.0
-        },
         {
           "date": "2026-03-11",
           "price": 185.81,
@@ -2947,30 +2941,30 @@
           "price": 217.55,
           "regime": "Crisis",
           "position": 0.532
+        },
+        {
+          "date": "2026-08-31",
+          "price": 220.78,
+          "regime": "Crisis",
+          "position": 0.541
         }
       ]
     },
     "MSFT": {
       "label": "Microsoft",
       "regime": "Bull",
-      "regime_conf": 0.87,
-      "price": 513.53,
-      "change_1d": 0.0168,
-      "yhat_5d": -0.0008,
-      "position": 0.937,
-      "prev_position": 0.898,
-      "vol_annual": 0.267,
-      "vol_cap": 0.937,
-      "advice": "BUY",
-      "advice_reason": "Bull regime \u2014 falling volatility lets the position size up.",
-      "as_of": "2026-08-28",
+      "regime_conf": 0.738,
+      "price": 507.29,
+      "change_1d": -0.0122,
+      "yhat_5d": -0.004,
+      "position": 0.0,
+      "prev_position": 0.937,
+      "vol_annual": 0.216,
+      "vol_cap": 1.0,
+      "advice": "SELL",
+      "advice_reason": "Bull regime \u2014 forecast fell below the exit line; step to cash.",
+      "as_of": "2026-08-31",
       "history": [
-        {
-          "date": "2026-03-10",
-          "price": 404.12,
-          "regime": "Bear",
-          "position": 1.0
-        },
         {
           "date": "2026-03-11",
           "price": 403.25,
@@ -3684,30 +3678,30 @@
           "price": 513.53,
           "regime": "Bull",
           "position": 0.937
+        },
+        {
+          "date": "2026-08-31",
+          "price": 507.29,
+          "regime": "Bull",
+          "position": 0.0
         }
       ]
     },
     "GOOGL": {
       "label": "Alphabet",
-      "regime": "Sideways",
-      "regime_conf": 0.83,
-      "price": 346.59,
-      "change_1d": 0.0174,
-      "yhat_5d": -0.0017,
+      "regime": "Bear",
+      "regime_conf": 0.942,
+      "price": 339.35,
+      "change_1d": -0.0209,
+      "yhat_5d": 0.0007,
       "position": 0.0,
       "prev_position": 0.0,
-      "vol_annual": 0.303,
-      "vol_cap": 0.825,
+      "vol_annual": 0.246,
+      "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Sideways regime \u2014 signal (-0.17%) below the entry line; stay in cash.",
-      "as_of": "2026-08-28",
+      "advice_reason": "Bear regime \u2014 signal (+0.07%) below the entry line; stay in cash.",
+      "as_of": "2026-08-31",
       "history": [
-        {
-          "date": "2026-03-10",
-          "price": 306.86,
-          "regime": "Bear",
-          "position": 1.0
-        },
         {
           "date": "2026-03-11",
           "price": 308.52,
@@ -4420,6 +4414,12 @@
           "date": "2026-08-28",
           "price": 346.59,
           "regime": "Sideways",
+          "position": 0.0
+        },
+        {
+          "date": "2026-08-31",
+          "price": 339.35,
+          "regime": "Bear",
           "position": 0.0
         }
       ]
