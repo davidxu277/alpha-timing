@@ -1,28 +1,22 @@
 {
-  "updated_at": "2026-09-10 00:26 UTC",
+  "updated_at": "2026-09-11 00:23 UTC",
   "note": "Signals update once per trading day; the model is daily-close. Research only \u2014 not investment advice.",
   "tickers": {
     "SPY": {
       "label": "S&P 500 (SPY)",
       "regime": "Sideways",
-      "regime_conf": 0.964,
-      "price": 765.96,
-      "change_1d": -0.0055,
-      "yhat_5d": 0.0076,
+      "regime_conf": 0.939,
+      "price": 762.4,
+      "change_1d": -0.0046,
+      "yhat_5d": 0.0055,
       "position": 1.0,
       "prev_position": 1.0,
-      "vol_annual": 0.083,
+      "vol_annual": 0.084,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Sideways regime \u2014 forecast +0.76%; stay invested at target exposure.",
-      "as_of": "2026-09-08",
+      "advice_reason": "Sideways regime \u2014 forecast +0.55%; stay invested at target exposure.",
+      "as_of": "2026-09-09",
       "history": [
-        {
-          "date": "2026-03-18",
-          "price": 657.93,
-          "regime": "Sideways",
-          "position": 1.0
-        },
         {
           "date": "2026-03-19",
           "price": 656.31,
@@ -736,30 +730,30 @@
           "price": 765.96,
           "regime": "Sideways",
           "position": 1.0
+        },
+        {
+          "date": "2026-09-09",
+          "price": 762.4,
+          "regime": "Sideways",
+          "position": 1.0
         }
       ]
     },
     "QQQ": {
       "label": "Nasdaq-100 (QQQ)",
       "regime": "Sideways",
-      "regime_conf": 0.964,
-      "price": 718.36,
-      "change_1d": -0.0008,
-      "yhat_5d": -0.0017,
-      "position": 1.0,
+      "regime_conf": 0.954,
+      "price": 716.31,
+      "change_1d": -0.0029,
+      "yhat_5d": -0.0036,
+      "position": 0.0,
       "prev_position": 1.0,
       "vol_annual": 0.128,
       "vol_cap": 1.0,
-      "advice": "HOLD",
-      "advice_reason": "Sideways regime \u2014 forecast -0.17%; stay invested at target exposure.",
-      "as_of": "2026-09-08",
+      "advice": "SELL",
+      "advice_reason": "Sideways regime \u2014 forecast fell below the exit line; step to cash.",
+      "as_of": "2026-09-09",
       "history": [
-        {
-          "date": "2026-03-18",
-          "price": 593.5,
-          "regime": "Sideways",
-          "position": 0.0
-        },
         {
           "date": "2026-03-19",
           "price": 591.62,
@@ -1473,30 +1467,30 @@
           "price": 718.36,
           "regime": "Sideways",
           "position": 1.0
+        },
+        {
+          "date": "2026-09-09",
+          "price": 716.31,
+          "regime": "Sideways",
+          "position": 0.0
         }
       ]
     },
     "AAPL": {
       "label": "Apple",
       "regime": "Bull",
-      "regime_conf": 0.577,
-      "price": 316.22,
-      "change_1d": -0.0117,
-      "yhat_5d": 0.0029,
+      "regime_conf": 0.524,
+      "price": 315.34,
+      "change_1d": -0.0028,
+      "yhat_5d": 0.0035,
       "position": 1.0,
       "prev_position": 1.0,
-      "vol_annual": 0.211,
+      "vol_annual": 0.206,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Bull regime \u2014 forecast +0.29%; stay invested at target exposure.",
-      "as_of": "2026-09-08",
+      "advice_reason": "Bull regime \u2014 forecast +0.35%; stay invested at target exposure.",
+      "as_of": "2026-09-09",
       "history": [
-        {
-          "date": "2026-03-18",
-          "price": 249.49,
-          "regime": "Bear",
-          "position": 0.0
-        },
         {
           "date": "2026-03-19",
           "price": 248.52,
@@ -2210,30 +2204,30 @@
           "price": 316.22,
           "regime": "Bull",
           "position": 1.0
+        },
+        {
+          "date": "2026-09-09",
+          "price": 315.34,
+          "regime": "Bull",
+          "position": 1.0
         }
       ]
     },
     "NVDA": {
       "label": "NVIDIA",
       "regime": "Crisis",
-      "regime_conf": 0.507,
-      "price": 225.73,
-      "change_1d": -0.0201,
-      "yhat_5d": 0.0055,
-      "position": 0.557,
-      "prev_position": 0.549,
-      "vol_annual": 0.449,
-      "vol_cap": 0.557,
+      "regime_conf": 0.515,
+      "price": 223.67,
+      "change_1d": -0.0091,
+      "yhat_5d": 0.007,
+      "position": 0.555,
+      "prev_position": 0.557,
+      "vol_annual": 0.451,
+      "vol_cap": 0.555,
       "advice": "HOLD",
-      "advice_reason": "Crisis regime \u2014 forecast +0.55%; stay invested at target exposure.",
-      "as_of": "2026-09-08",
+      "advice_reason": "Crisis regime \u2014 forecast +0.70%; stay invested at target exposure.",
+      "as_of": "2026-09-09",
       "history": [
-        {
-          "date": "2026-03-18",
-          "price": 180.19,
-          "regime": "Sideways",
-          "position": 0.0
-        },
         {
           "date": "2026-03-19",
           "price": 178.35,
@@ -2947,30 +2941,30 @@
           "price": 225.73,
           "regime": "Crisis",
           "position": 0.557
+        },
+        {
+          "date": "2026-09-09",
+          "price": 223.67,
+          "regime": "Crisis",
+          "position": 0.555
         }
       ]
     },
     "MSFT": {
       "label": "Microsoft",
       "regime": "Sideways",
-      "regime_conf": 0.571,
-      "price": 493.95,
-      "change_1d": -0.0115,
-      "yhat_5d": 0.0025,
+      "regime_conf": 0.617,
+      "price": 491.65,
+      "change_1d": -0.0047,
+      "yhat_5d": 0.0008,
       "position": 1.0,
       "prev_position": 1.0,
       "vol_annual": 0.232,
       "vol_cap": 1.0,
       "advice": "HOLD",
-      "advice_reason": "Sideways regime \u2014 forecast +0.25%; stay invested at target exposure.",
-      "as_of": "2026-09-08",
+      "advice_reason": "Sideways regime \u2014 forecast +0.08%; stay invested at target exposure.",
+      "as_of": "2026-09-09",
       "history": [
-        {
-          "date": "2026-03-18",
-          "price": 390.21,
-          "regime": "Bear",
-          "position": 1.0
-        },
         {
           "date": "2026-03-19",
           "price": 387.45,
@@ -3684,30 +3678,30 @@
           "price": 493.95,
           "regime": "Sideways",
           "position": 1.0
+        },
+        {
+          "date": "2026-09-09",
+          "price": 491.65,
+          "regime": "Sideways",
+          "position": 1.0
         }
       ]
     },
     "GOOGL": {
       "label": "Alphabet",
-      "regime": "Bear",
-      "regime_conf": 0.861,
-      "price": 338.36,
-      "change_1d": -0.0003,
-      "yhat_5d": -0.001,
+      "regime": "Sideways",
+      "regime_conf": 0.884,
+      "price": 330.65,
+      "change_1d": -0.0228,
+      "yhat_5d": -0.0018,
       "position": 0.0,
-      "prev_position": 1.0,
-      "vol_annual": 0.211,
+      "prev_position": 0.0,
+      "vol_annual": 0.181,
       "vol_cap": 1.0,
-      "advice": "SELL",
-      "advice_reason": "Bear regime \u2014 forecast fell below the exit line; step to cash.",
-      "as_of": "2026-09-08",
+      "advice": "HOLD",
+      "advice_reason": "Sideways regime \u2014 signal (-0.18%) below the entry line; stay in cash.",
+      "as_of": "2026-09-09",
       "history": [
-        {
-          "date": "2026-03-18",
-          "price": 307.31,
-          "regime": "Sideways",
-          "position": 1.0
-        },
         {
           "date": "2026-03-19",
           "price": 306.75,
@@ -4420,6 +4414,12 @@
           "date": "2026-09-08",
           "price": 338.36,
           "regime": "Bear",
+          "position": 0.0
+        },
+        {
+          "date": "2026-09-09",
+          "price": 330.65,
+          "regime": "Sideways",
           "position": 0.0
         }
       ]
