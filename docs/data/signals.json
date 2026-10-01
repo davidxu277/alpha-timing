@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-30 01:25 UTC",
+  "updated_at": "2026-10-01 01:25 UTC",
   "note": "Signals update once per trading day; the model is daily-close. Research only \u2014 not investment advice.",
   "tickers": {
     "SPY": {
