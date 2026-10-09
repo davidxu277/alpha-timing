@@ -1,59 +1,59 @@
 {
   "since": "2026-08-18",
-  "through": "2026-10-07",
-  "days": 32,
+  "through": "2026-10-08",
+  "days": 33,
   "chain_valid": true,
-  "tip_hash": "e59430de010ab0316d0810c43586fd30137244c0c8f4aba6235e26bfb1ec733b",
-  "updated_at": "2026-10-08 02:12 UTC",
+  "tip_hash": "62e6f58e6da0f5181bd4c6d97dc6c839b55d7edac51e95feffb07a79403cff6b",
+  "updated_at": "2026-10-09 02:25 UTC",
   "paper": {
     "SPY": {
-      "nav": 1.012338,
-      "return_pct": 1.23,
-      "buyhold_return_pct": 1.28,
-      "ma_return_pct": 1.23,
+      "nav": 1.008086,
+      "return_pct": 0.81,
+      "buyhold_return_pct": 0.86,
+      "ma_return_pct": 0.81,
       "vs_buyhold_pp": -0.05
     },
     "QQQ": {
-      "nav": 1.041057,
-      "return_pct": 4.11,
-      "buyhold_return_pct": 4.68,
-      "ma_return_pct": 4.86,
+      "nav": 1.027107,
+      "return_pct": 2.71,
+      "buyhold_return_pct": 3.28,
+      "ma_return_pct": 3.46,
       "vs_buyhold_pp": -0.57
     },
     "AAPL": {
-      "nav": 1.01076,
-      "return_pct": 1.08,
-      "buyhold_return_pct": 6.59,
-      "ma_return_pct": 4.74,
-      "vs_buyhold_pp": -5.51
+      "nav": 1.021979,
+      "return_pct": 2.2,
+      "buyhold_return_pct": 7.77,
+      "ma_return_pct": 5.9,
+      "vs_buyhold_pp": -5.57
     },
     "NVDA": {
-      "nav": 0.954424,
-      "return_pct": -4.56,
-      "buyhold_return_pct": 6.36,
-      "ma_return_pct": 6.31,
-      "vs_buyhold_pp": -10.92
+      "nav": 0.926363,
+      "return_pct": -7.36,
+      "buyhold_return_pct": 3.24,
+      "ma_return_pct": 3.18,
+      "vs_buyhold_pp": -10.6
     },
     "MSFT": {
-      "nav": 1.031668,
-      "return_pct": 3.17,
-      "buyhold_return_pct": 5.0,
-      "ma_return_pct": 4.95,
-      "vs_buyhold_pp": -1.84
+      "nav": 1.01774,
+      "return_pct": 1.77,
+      "buyhold_return_pct": 3.59,
+      "ma_return_pct": 3.53,
+      "vs_buyhold_pp": -1.81
     },
     "GOOGL": {
-      "nav": 1.02835,
-      "return_pct": 2.84,
-      "buyhold_return_pct": 0.13,
-      "ma_return_pct": 0.48,
-      "vs_buyhold_pp": 2.7
+      "nav": 1.021871,
+      "return_pct": 2.19,
+      "buyhold_return_pct": -0.5,
+      "ma_return_pct": 0.45,
+      "vs_buyhold_pp": 2.69
     },
     "portfolio": {
-      "nav": 1.013706,
-      "return_pct": 1.37,
-      "buyhold_return_pct": 4.2,
-      "ma_return_pct": 3.93,
-      "vs_buyhold_pp": -2.83
+      "nav": 1.004295,
+      "return_pct": 0.43,
+      "buyhold_return_pct": 3.23,
+      "ma_return_pct": 3.07,
+      "vs_buyhold_pp": -2.8
     }
   },
   "note": "Forward paper record \u2014 positions logged before the outcome, never edited. Research only; not investment advice."
