@@ -88,34 +88,31 @@ def ma20_over_60(history: list[dict]) -> float:
     return 1.0 if sum(px[-20:]) / 20.0 > sum(px[-60:]) / 60.0 else 0.0
 
 
-def build_day(sig: dict, last: dict | None) -> dict:
-    """Compose the next ledger line: signals snapshot + causal paper-NAV step."""
-    tickers = sig["tickers"]
-    date = next(iter(tickers.values()))["as_of"]
-
+def _step(payload: dict, last: dict | None, date: str, backfilled: bool) -> dict:
+    """One causal ledger step: yesterday's position earns today's realized return."""
     prev_paper = last["paper"] if last else {}
     signals_out, paper_out = {}, {}
     net_rets, ma_net_rets = [], []
 
-    for sym, s in tickers.items():
-        ret = float(s["change_1d"])                     # realized over the day just held
+    for sym, s in payload.items():
+        ret = float(s["ret_1d"])
         pos_new = float(s["position"])
-        ma_new = ma20_over_60(s["history"])             # MA20>60 target, decided at close
+        ma_new = s["ma_pos"] if s.get("ma_pos") is not None else ma20_over_60(s["_hist"])
 
-        # ── model strategy sleeve ──
-        held = prev_paper.get(sym)                      # what we carried into today
-        if held is None:                                # genesis: start flat in cash
+        # model strategy sleeve
+        held = prev_paper.get(sym)
+        if held is None:
             nav, pos_held, gross = 1.0, 0.0, 0.0
         else:
             nav, pos_held = float(held["nav"]), float(held["pos"])
             gross = pos_held * ret + (1.0 - pos_held) * CASH_D
             nav *= (1.0 + gross)
-        nav *= (1.0 - COST * abs(pos_new - pos_held))   # rebalance to today's target
+        nav *= (1.0 - COST * abs(pos_new - pos_held))
         net_rets.append(gross - COST * abs(pos_new - pos_held))
 
-        # ── MA20>60 benchmark sleeve (same accounting, mechanical rule) ──
+        # MA20>60 benchmark sleeve
         ma_prev = prev_paper.get(sym, {}).get("ma_pos")
-        if ma_prev is None:                             # ma baseline starts flat
+        if ma_prev is None:
             ma_nav, ma_held, ma_gross = 1.0, 0.0, 0.0
         else:
             ma_nav, ma_held = float(prev_paper[sym]["ma_nav"]), float(ma_prev)
@@ -124,12 +121,9 @@ def build_day(sig: dict, last: dict | None) -> dict:
         ma_nav *= (1.0 - COST * abs(ma_new - ma_held))
         ma_net_rets.append(ma_gross - COST * abs(ma_new - ma_held))
 
-        signals_out[sym] = {
-            "regime": s["regime"], "regime_conf": s["regime_conf"],
-            "position": pos_new, "prev_position": float(s["prev_position"]),
-            "advice": s["advice"], "price": s["price"],
-            "ret_1d": s["change_1d"], "yhat_5d": s["yhat_5d"],
-        }
+        signals_out[sym] = {k: s[k] for k in
+                            ("regime", "regime_conf", "position", "prev_position",
+                             "advice", "price", "ret_1d", "yhat_5d")}
         paper_out[sym] = {"nav": round(nav, 6), "pos": round(pos_new, 3),
                           "ma_nav": round(ma_nav, 6), "ma_pos": round(ma_new, 3)}
 
@@ -147,8 +141,59 @@ def build_day(sig: dict, last: dict | None) -> dict:
         "paper": paper_out,
         "logged_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
+    if backfilled:
+        core["backfilled"] = True
     core["hash"] = line_hash(core["prev_hash"], {k: v for k, v in core.items() if k != "hash"})
     return core
+
+
+def build_rows(sig: dict, last: dict | None) -> list[dict]:
+    """Every trading day after the ledger tip, not just today — the self-healing part.
+
+    The feed sometimes reports a stale as_of (Yahoo lag) or a CI run is missed, so
+    as_of can jump past a trading day. Those days still exist in each ticker's
+    trailing history, so we replay them in order and mark them `backfilled` (their
+    positions are causal but were not publicly committed on the day)."""
+    tickers = sig["tickers"]
+    as_of = next(iter(tickers.values()))["as_of"]
+    last_date = last["date"] if last else None
+
+    idx = {s: {p["date"]: i for i, p in enumerate(v["history"])} for s, v in tickers.items()}
+    if last_date is None:
+        dates = [as_of]
+    else:
+        dates = sorted({d for m in idx.values() for d in m if last_date < d <= as_of})
+        if as_of > last_date and as_of not in dates:
+            dates.append(as_of)
+
+    rows, prev = [], last
+    for d in dates:
+        live = (d == as_of)
+        payload = {}
+        for sym, v in tickers.items():
+            h, i = v["history"], idx[sym].get(d)
+            if live:
+                payload[sym] = {
+                    "regime": v["regime"], "regime_conf": v["regime_conf"],
+                    "position": float(v["position"]), "prev_position": float(v["prev_position"]),
+                    "advice": v["advice"], "price": v["price"],
+                    "ret_1d": v["change_1d"], "yhat_5d": v["yhat_5d"], "_hist": h}
+            elif i is not None:
+                ret = (h[i]["price"] / h[i - 1]["price"] - 1) if i > 0 else 0.0
+                payload[sym] = {
+                    "regime": h[i]["regime"], "regime_conf": None,
+                    "position": float(h[i]["position"]),
+                    "prev_position": float(h[i - 1]["position"]) if i > 0 else 0.0,
+                    "advice": None, "price": round(float(h[i]["price"]), 2),
+                    "ret_1d": round(ret, 4), "yhat_5d": None, "_hist": h[:i + 1]}
+            else:                                   # no quote that day — hold, no move
+                pp = float(prev["paper"][sym]["pos"]) if prev and sym in prev.get("paper", {}) else 0.0
+                payload[sym] = {"regime": None, "regime_conf": None, "position": pp,
+                                "prev_position": pp, "advice": None, "price": None,
+                                "ret_1d": 0.0, "yhat_5d": None, "_hist": h}
+        rows.append(_step(payload, prev, d, backfilled=not live))
+        prev = rows[-1]
+    return rows
 
 
 def buyhold_navs(rows: list[dict]) -> dict:
@@ -199,11 +244,88 @@ def write_summary(rows: list[dict]) -> None:
         json.dump(summary, f, indent=2)
 
 
+def gaps(rows: list[dict]) -> list[str]:
+    """Trading days present in the tickers' history but missing from the ledger."""
+    if not rows:
+        return []
+    try:
+        with open(SIGNALS) as f:
+            sig = json.load(f)
+    except OSError:
+        return []
+    have = {r["date"] for r in rows}
+    lo, hi = rows[0]["date"], rows[-1]["date"]
+    allh = {p["date"] for v in sig["tickers"].values() for p in v["history"]}
+    return sorted(d for d in allh if lo < d < hi and d not in have)
+
+
+def repair() -> None:
+    """Re-insert trading days that were skipped, recomputing NAV and hashes forward.
+
+    Original rows keep their own forward-logged signal payload; only the recovered
+    days are reconstructed from history, and they are flagged `backfilled`."""
+    rows = read_ledger()
+    missing = gaps(rows)
+    if not missing:
+        print("no internal gaps — nothing to repair.")
+        return
+    with open(SIGNALS) as f:
+        sig = json.load(f)
+    tickers = sig["tickers"]
+    idx = {s: {p["date"]: i for i, p in enumerate(v["history"])} for s, v in tickers.items()}
+    by_date = {r["date"]: r for r in rows}
+
+    out, prev = [], None
+    for d in sorted(set(by_date) | set(missing)):
+        if d in by_date:                                  # keep the original payload
+            old = by_date[d]
+            payload = {}
+            for sym, sg in old["signals"].items():
+                payload[sym] = dict(sg)
+                payload[sym]["ma_pos"] = old["paper"][sym].get("ma_pos")
+                payload[sym]["_hist"] = tickers[sym]["history"]
+            row = _step(payload, prev, d, backfilled=bool(old.get("backfilled")))
+        else:                                             # reconstruct from history
+            payload = {}
+            for sym, v in tickers.items():
+                h, i = v["history"], idx[sym].get(d)
+                if i is None:
+                    pp = float(prev["paper"][sym]["pos"]) if prev else 0.0
+                    payload[sym] = {"regime": None, "regime_conf": None, "position": pp,
+                                    "prev_position": pp, "advice": None, "price": None,
+                                    "ret_1d": 0.0, "yhat_5d": None, "ma_pos": None, "_hist": h}
+                else:
+                    ret = (h[i]["price"] / h[i - 1]["price"] - 1) if i > 0 else 0.0
+                    payload[sym] = {
+                        "regime": h[i]["regime"], "regime_conf": None,
+                        "position": float(h[i]["position"]),
+                        "prev_position": float(h[i - 1]["position"]) if i > 0 else 0.0,
+                        "advice": None, "price": round(float(h[i]["price"]), 2),
+                        "ret_1d": round(ret, 4), "yhat_5d": None,
+                        "ma_pos": None, "_hist": h[:i + 1]}
+            row = _step(payload, prev, d, backfilled=True)
+        out.append(row); prev = row
+
+    with open(LEDGER, "w") as f:
+        for r in out:
+            f.write(json.dumps(r, separators=(",", ":")) + "\n")
+    write_summary(out)
+    print(f"repaired: inserted {len(missing)} missing day(s) {missing}")
+    print(f"ledger now {len(out)} rows, {out[0]['date']} -> {out[-1]['date']}")
+
+
 def main() -> None:
     if "--verify" in sys.argv:
-        ok, msg = verify(read_ledger())
+        rows = read_ledger()
+        ok, msg = verify(rows)
+        g = gaps(rows)
         print(("VERIFY OK — " if ok else "VERIFY FAILED — ") + msg)
-        raise SystemExit(0 if ok else 1)
+        if g:
+            print(f"WARNING: {len(g)} missing trading day(s): {g}")
+        raise SystemExit(0 if ok and not g else 1)
+    if "--repair" in sys.argv:
+        repair()
+        return
 
     with open(SIGNALS) as f:
         sig = json.load(f)
@@ -214,19 +336,26 @@ def main() -> None:
     if not ok:
         raise SystemExit(f"refusing to append — existing chain is broken: {msg}")
 
-    if rows and rows[-1]["date"] == date:
+    new_rows = build_rows(sig, rows[-1] if rows else None)
+    if not new_rows:
         print(f"already logged {date} — no-op (idempotent).")
         return
 
-    row = build_day(sig, rows[-1] if rows else None)
     with open(LEDGER, "a") as f:
-        f.write(json.dumps(row, separators=(",", ":")) + "\n")
-    rows.append(row)
+        for r in new_rows:
+            f.write(json.dumps(r, separators=(",", ":")) + "\n")
+    rows.extend(new_rows)
     write_summary(rows)
 
-    port = row["paper"]["portfolio"]["nav"]
-    print(f"appended {date} (row {row['index']}, hash {row['hash'][:12]}…) — "
-          f"portfolio paper NAV {port:.4f} ({(port - 1) * 100:+.2f}%), {len(rows)} days tracked.")
+    recovered = [r["date"] for r in new_rows if r.get("backfilled")]
+    port = rows[-1]["paper"]["portfolio"]["nav"]
+    print(f"appended {len(new_rows)} row(s): {[r['date'] for r in new_rows]}")
+    if recovered:
+        print(f"  self-healed {len(recovered)} previously-missed day(s): {recovered}")
+    print(f"portfolio paper NAV {port:.4f} ({(port - 1) * 100:+.2f}%), {len(rows)} days tracked.")
+    g = gaps(rows)
+    if g:
+        print(f"WARNING: still missing {len(g)} day(s): {g} — run --repair")
 
 
 if __name__ == "__main__":

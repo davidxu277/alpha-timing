@@ -5,6 +5,7 @@ name: Update dashboard signals
 on:
   schedule:
     - cron: "30 22 * * 1-5"   # 22:30 UTC ≈ after the US market close
+    - cron: "30 3 * * 2-6"    # safety net ~5h later: self-heals any day the first run missed
   workflow_dispatch:            # allow manual runs from the Actions tab
 
 permissions:
@@ -28,10 +29,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Ledger unit tests
+        run: python docs/test_track_record.py
+
       - name: Run inference (retrains from the committed CSV, then fetches live data)
         run: python docs/update_signals.py
 
-      - name: Append immutable track record + paper NAV
+      - name: Append track record (back-fills any trading day a previous run missed)
         run: python docs/append_track_record.py
 
       - name: Commit refreshed signals + track record
@@ -45,3 +49,8 @@ jobs:
             git commit -m "chore: refresh signals + track record ($(date -u +%Y-%m-%d))"
             git push
           fi
+
+      # Last: fails the run (red X + notification) if the chain broke or a day is
+      # still missing. Runs after the commit so data is never lost to an alert.
+      - name: Verify ledger integrity and completeness
+        run: python docs/append_track_record.py --verify
